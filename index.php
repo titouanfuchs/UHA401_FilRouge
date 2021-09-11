@@ -7,6 +7,35 @@
     $group_data = file_get_contents('https://filrouge.uha4point0.fr/music/groupes');
     $groups = json_decode($group_data,true);
 
+    $searchArg = $_POST['search'];
+    $searchGroup = array();
+    $searchAlbum = array();
+
+    $correspondingSearch = false;
+    $correspondingType = -1;
+
+    if (isset($searchArg) && $searchArg != ''){
+        foreach ($groups as $group){
+            if (strtolower($group['nom']) == strtolower($searchArg)){
+                array_push($searchGroup, $group);
+                //$searchGroup = $group;
+                $correspondingSearch = true;
+                $correspondingType = 0;
+            }
+        }
+
+        if(!$correspondingSearch){
+            foreach ($albums as $album){
+                if (strtolower($album['nom']) == strtolower($searchArg)){
+                    array_push($searchAlbum, $album);
+                    //$searchAlbum = $albums;
+                    $correspondingSearch = true;
+                    $correspondingType = 1;
+                }
+            }
+        }
+    }
+
     function returnGroup($groups, $id){
         foreach ($groups as $group){
             if ($group['id'] == $id){
@@ -35,7 +64,7 @@
     <section class="researchSection">
         <form method="POST" name="MusicSearch">
             <fieldset class="transparentFieldSet">
-                <input type="text" name="researchArg" class="researchInput" placeholder="Recherche (Titre, Artiste, Album, Genre, etc...)"/>
+                <input type="text" name="search" class="researchInput" placeholder="Recherche (Artiste, Album)" value="<?php echo $_POST['search'] ?>"/>
                 <input type="submit" value="Rechercher" class="researchSubmit"/>
             </fieldset>
             <fieldset class="transparentFieldSet">
@@ -56,16 +85,23 @@
 
     <section id="groupContent" class="groupContent">
         <?php
-            $randomGroups = $groups;
-            shuffle($randomGroups);
+            $groupsToShow = null;
 
-            foreach($randomGroups as $group){
-                $groupName = $group['nom'];
-                $groupChanteur = $group['chanteur'];
-                $groupOrigin = $group['origin'];
-                $groupGenres = $group['genre'];
+            if ($searchGroup != null){
+                $groupsToShow = $searchGroup;
+            }else{
+                $groupsToShow = $groups;
+                shuffle($groupsToShow);
+            }
 
-                echo "<div class='groupCard'>
+            if ($correspondingSearch || $searchArg == null){
+                foreach($groupsToShow as $group) {
+                    $groupName = $group['nom'];
+                    $groupChanteur = $group['chanteur'];
+                    $groupOrigin = $group['origin'];
+                    $groupGenres = $group['genre'];
+
+                    echo "<div class='groupCard'>
                         <section class='groupCard-Img-Section'>
                             <img class='albumCard-Img' src='images/NoCover.png'/>
                         </section>        
@@ -76,16 +112,17 @@
                         </section>
                         <section class='groupCard-Genre-Section'>";
 
-                        foreach ($groupGenres as $genre){
-                            echo "<button>$genre</button>";
-                        }
+                    foreach ($groupGenres as $genre) {
+                        echo "<button>$genre</button>";
+                    }
 
-                        echo "</section> 
-                        <section class='groupCard-Action-Section'>
-                            <button>Favoris</button>
-                        </section>
+                    echo "
                     </div>";
+                }
+            }else{
+                echo "fromage";
             }
+
         ?>
     </section>
 
@@ -95,10 +132,12 @@
 
     <section id="albumContent" class="albumContent">
         <?php
-            $randomAlbum = $albums;
-            shuffle($randomAlbum);
+            $albumsToShow = null;
 
-            foreach($randomAlbum as $album){
+            $albumsToShow = $albums;
+            shuffle($albumsToShow);
+
+            foreach($albumsToShow as $album){
                 $album_pochette_url = $album['couverture'];
                 $album_name = $album['nom'];
                 $album_sortie = $album['sortie'];
