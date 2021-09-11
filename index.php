@@ -66,21 +66,25 @@
                 $groupGenres = $group['genre'];
 
                 echo "<div class='groupCard'>
-                    <section class='groupCard-Img-Section'>
-                        <img class='albumCard-Img' src='images/NoCover.png'/>
-                    </section>
-        
-                    <section class='groupCard-Info-Section'>
-                        <h2>$groupName</h2>
-                        <h3>$groupChanteur</h3>
-                        <h4>$groupOrigin</h4>
-                        <h4>Genre</h4>
-                    </section>
-        
-                    <section class='groupCard-Action-Section'>
-                        <button>Favoris</button>
-                    </section>
-                </div>";
+                        <section class='groupCard-Img-Section'>
+                            <img class='albumCard-Img' src='images/NoCover.png'/>
+                        </section>        
+                        <section class='groupCard-Info-Section'>
+                            <h2>$groupName</h2>
+                            <h3>$groupChanteur</h3>
+                            <h4>$groupOrigin</h4>
+                        </section>
+                        <section class='groupCard-Genre-Section'>";
+
+                        foreach ($groupGenres as $genre){
+                            echo "<button>$genre</button>";
+                        }
+
+                        echo "</section> 
+                        <section class='groupCard-Action-Section'>
+                            <button>Favoris</button>
+                        </section>
+                    </div>";
             }
         ?>
     </section>
