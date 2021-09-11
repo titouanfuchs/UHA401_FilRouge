@@ -64,8 +64,8 @@
         return $result;
     }
 
-    echo $correspondingSearch;
-    echo $correspondingType;
+    /*echo $correspondingSearch;
+    echo $correspondingType;*/
 ?>
 
 <!DOCTYPE html>
