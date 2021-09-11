@@ -8,17 +8,22 @@
     $groups = json_decode($group_data,true);
 
     $searchArg = $_POST['search'];
-    $searchGroup = array();
-    $searchAlbum = array();
+    $groupsToShow = array();
+    $albumsToShow = array();
 
     $correspondingSearch = false;
     $correspondingType = -1;
 
-    if (isset($searchArg) && $searchArg != ''){
+
+    if ($searchArg != null){
         foreach ($groups as $group){
             if (strtolower($group['nom']) == strtolower($searchArg)){
-                array_push($searchGroup, $group);
-                //$searchGroup = $group;
+                array_push($groupsToShow, $group);
+
+                foreach (returnAlbums($albums, $group['id']) as $album){
+                    array_push($albumsToShow, $album);
+                }
+
                 $correspondingSearch = true;
                 $correspondingType = 0;
             }
@@ -27,8 +32,9 @@
         if(!$correspondingSearch){
             foreach ($albums as $album){
                 if (strtolower($album['nom']) == strtolower($searchArg)){
-                    array_push($searchAlbum, $album);
-                    //$searchAlbum = $albums;
+                    array_push($albumsToShow, $album);
+                    array_push($groupsToShow, returnGroup($groups, $album['artiste']));
+
                     $correspondingSearch = true;
                     $correspondingType = 1;
                 }
@@ -42,6 +48,18 @@
                 return $group;
             }
         }
+    }
+
+    function returnAlbums($albums, $id){
+        $result = array();
+
+        foreach ($albums as $album){
+            if ($album['artiste'] == $id){
+                array_push($result, $album);
+            }
+        }
+
+        return $result;
     }
 ?>
 
@@ -85,11 +103,7 @@
 
     <section id="groupContent" class="groupContent">
         <?php
-            $groupsToShow = null;
-
-            if ($searchGroup != null){
-                $groupsToShow = $searchGroup;
-            }else{
+            if ($correspondingSearch == false){
                 $groupsToShow = $groups;
                 shuffle($groupsToShow);
             }
@@ -132,37 +146,42 @@
 
     <section id="albumContent" class="albumContent">
         <?php
-            $albumsToShow = null;
 
-            $albumsToShow = $albums;
-            shuffle($albumsToShow);
+            if ($correspondingSearch == false){
+                $albumsToShow = $albums;
+                shuffle($albumsToShow);
+            }
 
-            foreach($albumsToShow as $album){
-                $album_pochette_url = $album['couverture'];
-                $album_name = $album['nom'];
-                $album_sortie = $album['sortie'];
-                $album_pistes = $album['pistes'];
-                $album_group_index = $album['artiste'];
-                $album_group = returnGroup($groups ,$album_group_index);
-                $album_group_name = $album_group['nom'];
+            if ($correspondingSearch || $searchArg == null) {
+                foreach ($albumsToShow as $album) {
+                    $album_pochette_url = $album['couverture'];
+                    $album_name = $album['nom'];
+                    $album_sortie = $album['sortie'];
+                    $album_pistes = $album['pistes'];
+                    $album_group_index = $album['artiste'];
+                    $album_group = returnGroup($groups, $album_group_index);
+                    $album_group_name = $album_group['nom'];
 
-                echo "<div class='albumCard'>
-                            <section class='albumCard-pochette-Section'>
-                                <img class='albumCard-pochette' src='$album_pochette_url'/>
-                            </section>
-                
-                            <section class='albumCard-Info-Section'>
-                                <h2>$album_name</h2>
-                                <h3>$album_group_name</h3>
-                                <h4>$album_sortie</h4>
-                                <h4>$album_pistes</h4>
-                            </section>
-                
-                            <section class='albumCard-Action-Section'>
-                                <button>Je l'ai écouté !</button>
-                                <button>Favoris</button>
-                            </section>
-                        </div>";
+                    echo "<div class='albumCard'>
+                                <section class='albumCard-pochette-Section'>
+                                    <img class='albumCard-pochette' src='$album_pochette_url'/>
+                                </section>
+                    
+                                <section class='albumCard-Info-Section'>
+                                    <h2>$album_name</h2>
+                                    <h3>$album_group_name</h3>
+                                    <h4>$album_sortie</h4>
+                                    <h4>$album_pistes</h4>
+                                </section>
+                    
+                                <section class='albumCard-Action-Section'>
+                                    <button>Je l'ai écouté !</button>
+                                    <button>Favoris</button>
+                                </section>
+                            </div>";
+                }
+            }else{
+                echo 'coucou';
             }
         ?>
     </section>
