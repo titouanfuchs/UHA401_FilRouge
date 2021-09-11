@@ -307,3 +307,11 @@ footer{
     border-radius: 5px;
     /*border: 1px black dotted;*/
 }
+
+/*--Top--*/
+
+.topAnchor{
+    display: none;
+    position: absolute;
+    top: 0px;
+}

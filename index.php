@@ -25,6 +25,8 @@
 </head>
 
 <body>
+<div class="topAnchor" id="top"></div>
+
 <header class="mainHeader">
     <section class="logoSection">
         <img title="je ne suis présent que pour combler un trou béant" style="width: 50%" src="https://www.avantjetaisriche.com/wp-content/uploads/2015/06/monsieur-mr-patate-homer-simpson.jpg"/>
@@ -48,7 +50,7 @@
 </header>
 
 <section id="mainSection" class="mainSection">
-    <section class="contentHeader">
+    <section class="contentHeader" id="groupHeader">
 
     </section>
 
@@ -102,28 +104,28 @@
                 $album_group_name = $album_group['nom'];
 
                 echo "<div class='albumCard'>
-                        <section class='albumCard-pochette-Section'>
-                            <img class='albumCard-pochette' src='$album_pochette_url'/>
-                        </section>
-            
-                        <section class='albumCard-Info-Section'>
-                            <h2>$album_name</h2>
-                            <h3>$album_group_name</h3>
-                            <h4>$album_sortie</h4>
-                            <h4>$album_pistes</h4>
-                        </section>
-            
-                        <section class='albumCard-Action-Section'>
-                            <button>Je l'ai écouté !</button>
-                            <button>Favoris</button>
-                        </section>
-                    </div>";
+                            <section class='albumCard-pochette-Section'>
+                                <img class='albumCard-pochette' src='$album_pochette_url'/>
+                            </section>
+                
+                            <section class='albumCard-Info-Section'>
+                                <h2>$album_name</h2>
+                                <h3>$album_group_name</h3>
+                                <h4>$album_sortie</h4>
+                                <h4>$album_pistes</h4>
+                            </section>
+                
+                            <section class='albumCard-Action-Section'>
+                                <button>Je l'ai écouté !</button>
+                                <button>Favoris</button>
+                            </section>
+                        </div>";
             }
         ?>
     </section>
 </section>
 <footer>
-    <img title="je ne suis présent que pour combler un trou béant" style="width: 15%; position: relative;left: 50%;" src="https://www.avantjetaisriche.com/wp-content/uploads/2015/06/monsieur-mr-patate-homer-simpson.jpg"/>
+    <a href="#top"><img title="je ne suis présent que pour combler un trou béant" style="width: 15%; position: relative;left: 50%;" src="https://www.avantjetaisriche.com/wp-content/uploads/2015/06/monsieur-mr-patate-homer-simpson.jpg"/></a>
 </footer>
 </body>
 </html>
