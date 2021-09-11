@@ -51,26 +51,48 @@
     <section class="contentHeader">
 
     </section>
-    <section id="researchContent" class="researchContent">
-        <!--echo "<div class='musicCard'>
-            <section class='musicCard-pochette-Section'>
-                <img class='musicCard-pochette' src='images/NoCover.png'/>
-            </section>
 
-            <section class='musicCard-Info-Section'>
-                <h2>Album Title</h2>
-                <h3>Artist Name</h3>
-                <h4>Sortie</h4>
-                <h4>Pistes</h4>
-            </section>
-
-            <section class='musicCard-Action-Section'>
-                <button>Je l'ai écouté !</button>
-                <button>Favoris</button>
-            </section>
-        </div>";-->
+    <section id="groupContent" class="groupContent">
         <?php
-            foreach($albums as $album){
+            $randomGroups = $groups;
+            shuffle($randomGroups);
+
+            foreach($randomGroups as $group){
+                $groupName = $group['nom'];
+                $groupChanteur = $group['chanteur'];
+                $groupOrigin = $group['origin'];
+                $groupGenres = $group['genre'];
+
+                echo "<div class='groupCard'>
+                    <section class='groupCard-Img-Section'>
+                        <img class='albumCard-Img' src='images/NoCover.png'/>
+                    </section>
+        
+                    <section class='groupCard-Info-Section'>
+                        <h2>$groupName</h2>
+                        <h3>$groupChanteur</h3>
+                        <h4>$groupOrigin</h4>
+                        <h4>Genre</h4>
+                    </section>
+        
+                    <section class='groupCard-Action-Section'>
+                        <button>Favoris</button>
+                    </section>
+                </div>";
+            }
+        ?>
+    </section>
+
+    <section class="contentHeader">
+
+    </section>
+
+    <section id="albumContent" class="albumContent">
+        <?php
+            $randomAlbum = $albums;
+            shuffle($randomAlbum);
+
+            foreach($randomAlbum as $album){
                 $album_pochette_url = $album['couverture'];
                 $album_name = $album['nom'];
                 $album_sortie = $album['sortie'];
@@ -79,19 +101,19 @@
                 $album_group = returnGroup($groups ,$album_group_index);
                 $album_group_name = $album_group['nom'];
 
-                echo "<div class='musicCard'>
-                        <section class='musicCard-pochette-Section'>
-                            <img class='musicCard-pochette' src='$album_pochette_url'/>
+                echo "<div class='albumCard'>
+                        <section class='albumCard-pochette-Section'>
+                            <img class='albumCard-pochette' src='$album_pochette_url'/>
                         </section>
             
-                        <section class='musicCard-Info-Section'>
+                        <section class='albumCard-Info-Section'>
                             <h2>$album_name</h2>
                             <h3>$album_group_name</h3>
                             <h4>$album_sortie</h4>
                             <h4>$album_pistes</h4>
                         </section>
             
-                        <section class='musicCard-Action-Section'>
+                        <section class='albumCard-Action-Section'>
                             <button>Je l'ai écouté !</button>
                             <button>Favoris</button>
                         </section>

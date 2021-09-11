@@ -67,13 +67,25 @@ footer{
     padding: 5px;
 }
 
-.researchContent{
+.albumContent{
     /*border: black 1px solid;*/
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     padding: 5px;
     justify-content: center;
+}
+
+.groupContent{
+    /*border: 1px black dotted;*/
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 5px;
+    justify-content: left;
+    margin-bottom: 5px;
 }
 
 .contentHeader{
@@ -168,8 +180,8 @@ footer{
     overflow: hidden;
 }
 
-/*---MusicCard--*/
-.musicCard{
+/*---AlbumCard--*/
+.albumCard{
     overflow: hidden;
     display: flex;
     flex-direction: row;
@@ -180,7 +192,7 @@ footer{
     padding: 10px;
 
     width: 30em;
-    height: 20em;
+    height: 15em;
 
     /*border: black 1px solid;*/
     border-radius: 10px;
@@ -188,18 +200,18 @@ footer{
     background-image: linear-gradient(white, whitesmoke);
 }
 
-.musicCard:hover{
+.albumCard:hover{
     background-image: linear-gradient(white, rgb(2,170,176));
 }
 
-.musicCard-pochette-Section{
+.albumCard-pochette-Section{
     display: flex;
     /*border: 1px dotted black;*/
     width: 40%;
     height: 80%;
 }
 
-.musicCard-pochette{
+.albumCard-pochette{
     margin: auto;
     position: relative;
     width: 100%;
@@ -207,14 +219,14 @@ footer{
     box-shadow: 0px 6px 6px rgba(0,0,0,0.2);
 }
 
-.musicCard-Info-Section{
+.albumCard-Info-Section{
     /*border: 1px black dotted;*/
     padding: 5px;
     width: 55%;
     height: 77%;
 }
 
-.musicCard-Action-Section{
+.albumCard-Action-Section{
     width: 100%;
     height: 15%;
 
@@ -229,7 +241,69 @@ footer{
     /*border: 1px black dotted;*/
 }
 
-.musicCard-Action-Section button{
+.albumCard-Action-Section button{
     height: 80%;
     margin: 5px;
+}
+
+/*---GroupCard---*/
+.groupCard{
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+
+    margin: 10px;
+    padding: 10px;
+
+    min-width: 30em;
+    width: 30em;
+    height: 15em;
+
+    /*border: black 1px solid;*/
+    border-radius: 10px;
+    box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
+    background-image: linear-gradient(white, whitesmoke);
+}
+
+.groupCard:hover{
+    background-image: linear-gradient(white, rgb(2,170,176));
+}
+
+.groupCard-Info-Section{
+    /*border: 1px black dotted;*/
+    padding: 5px;
+    width: 55%;
+    height: 77%;
+}
+
+.groupCard-Img-Section{
+    display: flex;
+    /*border: 1px dotted black;*/
+    width: 40%;
+    height: 80%;
+}
+
+.groupCard-Img{
+    margin: auto;
+    position: relative;
+    width: 100%;
+
+    box-shadow: 0px 6px 6px rgba(0,0,0,0.2);
+}
+
+.groupCard-Action-Section{
+    width: 100%;
+    height: 15%;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+
+    box-shadow: inset 0px 4px 5px rgba(0,0,0,0.2);
+    background: rgba(0,0,100,0.1);
+
+    border-radius: 5px;
+    /*border: 1px black dotted;*/
 }
