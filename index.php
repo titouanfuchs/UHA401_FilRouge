@@ -17,7 +17,8 @@
 
     if ($searchArg != null){
         foreach ($groups as $group){
-            if (strtolower($group['nom']) == strtolower($searchArg)){
+            //if (strtolower($group['nom']) == strtolower($searchArg)){
+            if (substr(strtolower($group['nom']), 0, strlen($searchArg)) === strtolower($searchArg)){
                 array_push($groupsToShow, $group);
 
                 foreach (returnAlbums($albums, $group['id']) as $album){
@@ -31,7 +32,8 @@
 
         if(!$correspondingSearch){
             foreach ($albums as $album){
-                if (strtolower($album['nom']) == strtolower($searchArg)){
+                //if (strtolower($album['nom']) == strtolower($searchArg)){
+                if (substr(strtolower($album['nom']), 0, strlen($searchArg)) === strtolower($searchArg)){
                     array_push($albumsToShow, $album);
                     array_push($groupsToShow, returnGroup($groups, $album['artiste']));
 
@@ -61,6 +63,9 @@
 
         return $result;
     }
+
+    echo $correspondingSearch;
+    echo $correspondingType;
 ?>
 
 <!DOCTYPE html>
