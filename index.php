@@ -1,11 +1,5 @@
 <?php
-    session_start();
-
-    $albums_data = file_get_contents('https://filrouge.uha4point0.fr/music/albums');
-    $albums =json_decode($albums_data,true);
-
-    $group_data = file_get_contents('https://filrouge.uha4point0.fr/music/groupes');
-    $groups = json_decode($group_data,true);
+    $bdd = new PDO('mysql:host=localhost;dbname=musicpass;charset=utf8', 'root', 'root');
 
     $searchArg = $_POST['search'];
     $groupsToShow = array();
@@ -14,32 +8,51 @@
     $correspondingSearch = false;
     $correspondingType = -1;
 
-    if ($searchArg != null){
-        foreach ($groups as $group){
-            //if (strtolower($group['nom']) == strtolower($searchArg)){
-            if (substr(strtolower($group['nom']), 0, strlen($searchArg)) === strtolower($searchArg)){
-                array_push($groupsToShow, $group);
+    $reponse = null;
 
-                foreach (returnAlbums($albums, $group['id']) as $album){
-                    array_push($albumsToShow, $album);
-                }
+    if ($searchArg != ""){
+        $reponse = $bdd->query("SELECT * FROM albums WHERE nom LIKE '{$searchArg}%'");
 
-                $correspondingSearch = true;
-                $correspondingType = 0;
+        while($donnees = $reponse->fetch()){
+            $correspondingType = 1;
+            $correspondingSearch = true;
+            array_push($albumsToShow, $donnees);
+
+            $groupReponse = $bdd->query("SELECT * FROM groups WHERE id='{$donnees['artiste']}'");
+
+            while($groupDonnees = $groupReponse->fetch()){
+                array_push($groupsToShow, $groupDonnees);
             }
         }
 
-        if(!$correspondingSearch){
-            foreach ($albums as $album){
-                //if (strtolower($album['nom']) == strtolower($searchArg)){
-                if (substr(strtolower($album['nom']), 0, strlen($searchArg)) === strtolower($searchArg)){
-                    array_push($albumsToShow, $album);
-                    array_push($groupsToShow, returnGroup($groups, $album['artiste']));
+        if (!$correspondingSearch){
+            $reponse = $bdd->query("SELECT * FROM groups WHERE nom LIKE '{$searchArg}%'");
 
-                    $correspondingSearch = true;
-                    $correspondingType = 1;
+            while($donnees = $reponse->fetch()){
+                $correspondingType = 0;
+                $correspondingSearch = true;
+                array_push($groupsToShow, $donnees);
+
+                $albumReponse = $bdd->query("SELECT * FROM albums WHERE artiste='{$donnees['id']}'");
+
+                while ($albumDonnees = $albumReponse->fetch()){
+                    array_push($albumsToShow, $albumDonnees);
                 }
             }
+        }
+    }else{
+        //Si aucune recherche n'est effectuée
+
+        $reponse = $bdd->query("SELECT * FROM albums");
+
+        while($donnees = $reponse->fetch()){
+            array_push($albumsToShow, $donnees);
+        }
+
+        $reponse = $bdd->query("SELECT * FROM groups ");
+
+        while($donnees = $reponse->fetch()){
+            array_push($groupsToShow, $donnees);
         }
     }
 
@@ -108,16 +121,13 @@
     <section id="groupContent" class="groupContent">
         <?php
             if ($correspondingSearch == false){
-                $groupsToShow = $groups;
                 shuffle($groupsToShow);
             }
 
             if ($correspondingSearch || $searchArg == null){
                 foreach($groupsToShow as $group) {
                     $groupName = $group['nom'];
-                    $groupChanteur = $group['chanteur'];
-                    $groupOrigin = $group['origin'];
-                    $groupGenres = $group['genre'];
+                    $groupGenres = explode("/*/", $group['tags']);
 
                     echo "<div class='groupCard'>
                         <section class='groupCard-Img-Section'>
@@ -125,8 +135,6 @@
                         </section>        
                         <section class='groupCard-Info-Section'>
                             <h2>$groupName</h2>
-                            <h3>$groupChanteur</h3>
-                            <h4>$groupOrigin</h4>
                         </section>
                         <section class='groupCard-Genre-Section'>";
 
@@ -155,13 +163,14 @@
     <section id="albumContent" class="albumContent">
         <?php
 
-            if (substr(strtolower($searchArg), 0, 6) === "patate"){
+            if (strtolower($searchArg) === "patate"){
                 echo "<img src='https://c.tenor.com/MynZDJ3KGiwAAAAC/mr-potato-work-out.gif' alt='kdo' title='kdo' />";
-            }elseif (substr(strtolower($searchArg), 0, 8) === "pasteque"){
+            }elseif (strtolower($searchArg) === "pasteque"){
                 echo "<img src='https://c.tenor.com/unqFAepxyjcAAAAC/watermelon-watermelon-blast.gif' alt='kdo' title='kdo' />";
+            }elseif(strtolower($searchArg) === "reh2"){
+                echo "<img src='https://c.tenor.com/nJlxjsjqDLgAAAAC/tes-qui-tu-es-qui.gif' alt='kdo' title='kdo' />";
             }else{
                 if ($correspondingSearch == false){
-                    $albumsToShow = $albums;
                     shuffle($albumsToShow);
                 }
 
@@ -172,12 +181,12 @@
                         $album_sortie = $album['sortie'];
                         $album_pistes = $album['pistes'];
                         $album_group_index = $album['artiste'];
-                        $album_group = returnGroup($groups, $album_group_index);
+                        $album_group = returnGroup($groupsToShow, $album_group_index);
                         $album_group_name = $album_group['nom'];
 
                         echo "<div class='albumCard'>
                                 <section class='albumCard-pochette-Section'>
-                                    <img class='albumCard-pochette' src='$album_pochette_url'/>
+                                    <img class='albumCard-pochette' src='albumsArt/$album_pochette_url'/>
                                 </section>
                     
                                 <section class='albumCard-Info-Section'>
