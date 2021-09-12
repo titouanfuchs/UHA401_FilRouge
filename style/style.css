@@ -11,6 +11,8 @@ body{
     margin: auto;
     width: 100%;
     height: 99%;
+
+    font-family: clean-sans;
 }
 
 .mainHeader{
@@ -24,6 +26,8 @@ body{
     margin: auto;
     min-height: 10%;
     height: 10em;
+
+    padding: 10px;
 
     position: sticky;
     top: 0px;
@@ -90,6 +94,10 @@ footer{
 
 .contentHeader{
     /*border: black 1px solid;*/
+    color:whitesmoke;
+    text-align: center;
+    vertical-align: center;
+    padding: 1px;
     border-radius: 10px;
     background: #2b2b2b;
     min-width: 40%;
@@ -103,15 +111,21 @@ footer{
     margin-bottom: 5px;
 }
 
+.contentHeader h1{
+    margin: 10px;
+}
+
 /*---Section recherche/navigation---*/
 
 .researchSection{
     /*--Taille--*/
     width: 60%;
     min-width: 30em;
-    min-height: 50%;
-    max-height: 80%;
-    margin: auto;
+    /*min-height: 50%;
+    max-height: 80%;*/
+    height: 95%;
+    margin-left: 10px;
+    margin-right: 10px;
     padding: 5px;
 
     /*--border--*/
@@ -168,20 +182,57 @@ footer{
 .userSection{
     /*border: black 1px dotted;*/
     width: 25em;
+    display: flex;
+    justify-content: center;
+    padding: 5px;
+
+    border-radius: 0.5em;
+    box-shadow: inset 0px 5px 5px rgba(0,0,0,0.4);
+    background: rgba(0,0,0,0.025);
 
     overflow: hidden;
+}
+
+.userSection image{
+    display: block;
 }
 
 /*--LogoSection--*/
 .logoSection{
     /*border: black 1px dotted;*/
     width: 25em;
-
+    display: flex;
+    justify-content: center;
     overflow: hidden;
+}
+
+.logoSection image{
+    display: block;
+}
+
+/*---GenericCard---*/
+.Card{
+    overflow: hidden;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    margin: 10px;
+    padding: 10px;
+
+    width: 30em;
+    height: 15em;
+
+    /*border: black 1px solid;*/
+    border-radius: 10px;
+    box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
+    background-image: linear-gradient(white, whitesmoke);
 }
 
 /*---AlbumCard--*/
 .albumCard{
+    font-family: clean-sans;
     overflow: hidden;
     display: flex;
     flex-direction: row;
@@ -342,6 +393,9 @@ footer{
 
 .topAnchor{
     display: none;
-    position: absolute;
-    top: 0px;
+}
+
+@font-face {
+    font-family: clean-sans;
+    src: url("../font/coolvetica rg.ttf");
 }

@@ -80,7 +80,7 @@
 
 <header class="mainHeader">
     <section class="logoSection">
-        <img title="je ne suis présent que pour combler un trou béant" style="width: 50%" src="https://www.avantjetaisriche.com/wp-content/uploads/2015/06/monsieur-mr-patate-homer-simpson.jpg"/>
+        <img src="images/Logo.png">
     </section>
 
     <section class="researchSection">
@@ -102,7 +102,7 @@
 
 <section id="mainSection" class="mainSection">
     <section class="contentHeader" id="groupHeader">
-
+        <h1>Groupes</h1>
     </section>
 
     <section id="groupContent" class="groupContent">
@@ -139,15 +139,17 @@
                 }
             }else{
                 echo "<div class='Card'>
-                          Coucou
-                      </div>";
+                              <div class='noResult '>
+                                <h1>Aucun résultat</h1>
+                              </div>
+                          </div>";
             }
 
         ?>
     </section>
 
     <section class="contentHeader">
-
+        <h1>Albums</h1>
     </section>
 
     <section id="albumContent" class="albumContent">
@@ -193,8 +195,10 @@
                     }
                 }else{
                     echo "<div class='Card'>
-                          Coucou
-                      </div>";
+                              <div class='noResult '>
+                                <h1>Aucun résultat</h1>
+                              </div>
+                          </div>";
                 }
             }
 
