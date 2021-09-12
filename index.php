@@ -14,7 +14,6 @@
     $correspondingSearch = false;
     $correspondingType = -1;
 
-
     if ($searchArg != null){
         foreach ($groups as $group){
             //if (strtolower($group['nom']) == strtolower($searchArg)){
@@ -56,7 +55,7 @@
         $result = array();
 
         foreach ($albums as $album){
-            if ($album['artiste'] == $id){
+            if ($album['artiste'] === $id){
                 array_push($result, $album);
             }
         }
@@ -139,7 +138,9 @@
                     </div>";
                 }
             }else{
-                echo "fromage";
+                echo "<div class='Card'>
+                          Coucou
+                      </div>";
             }
 
         ?>
@@ -152,22 +153,27 @@
     <section id="albumContent" class="albumContent">
         <?php
 
-            if ($correspondingSearch == false){
-                $albumsToShow = $albums;
-                shuffle($albumsToShow);
-            }
+            if (substr(strtolower($searchArg), 0, 6) === "patate"){
+                echo "<img src='https://c.tenor.com/MynZDJ3KGiwAAAAC/mr-potato-work-out.gif' alt='kdo' title='kdo' />";
+            }elseif (substr(strtolower($searchArg), 0, 8) === "pasteque"){
+                echo "<img src='https://c.tenor.com/unqFAepxyjcAAAAC/watermelon-watermelon-blast.gif' alt='kdo' title='kdo' />";
+            }else{
+                if ($correspondingSearch == false){
+                    $albumsToShow = $albums;
+                    shuffle($albumsToShow);
+                }
 
-            if ($correspondingSearch || $searchArg == null) {
-                foreach ($albumsToShow as $album) {
-                    $album_pochette_url = $album['couverture'];
-                    $album_name = $album['nom'];
-                    $album_sortie = $album['sortie'];
-                    $album_pistes = $album['pistes'];
-                    $album_group_index = $album['artiste'];
-                    $album_group = returnGroup($groups, $album_group_index);
-                    $album_group_name = $album_group['nom'];
+                if ($correspondingSearch || $searchArg == null) {
+                    foreach ($albumsToShow as $album) {
+                        $album_pochette_url = $album['couverture'];
+                        $album_name = $album['nom'];
+                        $album_sortie = $album['sortie'];
+                        $album_pistes = $album['pistes'];
+                        $album_group_index = $album['artiste'];
+                        $album_group = returnGroup($groups, $album_group_index);
+                        $album_group_name = $album_group['nom'];
 
-                    echo "<div class='albumCard'>
+                        echo "<div class='albumCard'>
                                 <section class='albumCard-pochette-Section'>
                                     <img class='albumCard-pochette' src='$album_pochette_url'/>
                                 </section>
@@ -184,10 +190,14 @@
                                     <button>Favoris</button>
                                 </section>
                             </div>";
+                    }
+                }else{
+                    echo "<div class='Card'>
+                          Coucou
+                      </div>";
                 }
-            }else{
-                echo 'coucou';
             }
+
         ?>
     </section>
 </section>
