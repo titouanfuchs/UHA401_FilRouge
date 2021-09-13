@@ -1,7 +1,12 @@
 <?php
     $bdd = new PDO('mysql:host=localhost;dbname=musicpass;charset=utf8', 'root', 'root');
 
-    $searchArg = $_POST['search'];
+    $searchArg = null;
+
+    if (isset($_POST['search'])){
+        $searchArg = $_POST['search'];
+    }
+
     $groupsToShow = array();
     $albumsToShow = array();
 
@@ -10,7 +15,7 @@
 
     $reponse = null;
 
-    if ($searchArg != ""){
+    if ($searchArg != "" && isset($searchArg)){
         $reponse = $bdd->query("SELECT * FROM albums WHERE nom LIKE '{$searchArg}%'");
 
         while($donnees = $reponse->fetch()){
@@ -99,7 +104,7 @@
     <section class="researchSection">
         <form method="POST" name="MusicSearch">
             <fieldset class="transparentFieldSet">
-                <input type="text" name="search" class="researchInput" placeholder="Recherche (Artiste, Album)" value="<?php echo $_POST['search'] ?>"/>
+                <input type="text" name="search" class="researchInput" placeholder="Recherche (Artiste, Album)" value="<?php echo $searchArg ?>"/>
                 <input type="submit" value="Rechercher" class="researchSubmit"/>
             </fieldset>
             <fieldset class="transparentFieldSet">
@@ -190,10 +195,18 @@
                                 </section>
                     
                                 <section class='albumCard-Info-Section'>
-                                    <h2>$album_name</h2>
-                                    <h3>$album_group_name</h3>
-                                    <h4>$album_sortie</h4>
-                                    <h4>$album_pistes</h4>
+                                    <section>
+                                        <h2>$album_name</h2>
+                                    </section>
+                                    <section>
+                                        <h3>Groupe : $album_group_name</h3>
+                                    </section>
+                                    <section>
+                                        <h4>Sortie :$album_sortie</h4>
+                                    </section>
+                                    <section>
+                                        <h4>Piste(s):$album_pistes</h4>
+                                    </section>
                                 </section>
                     
                                 <section class='albumCard-Action-Section'>
