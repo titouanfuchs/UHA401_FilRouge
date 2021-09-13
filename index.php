@@ -16,32 +16,31 @@
     $reponse = null;
 
     if ($searchArg != "" && isset($searchArg)){
-        $reponse = $bdd->query("SELECT * FROM albums WHERE nom LIKE '{$searchArg}%'");
+
+        $reponse = $bdd->query("SELECT * FROM groupes WHERE nom LIKE '{$searchArg}%'");
 
         while($donnees = $reponse->fetch()){
-            $correspondingType = 1;
             $correspondingSearch = true;
-            array_push($albumsToShow, $donnees);
+            array_push($groupsToShow, $donnees);
 
-            $groupReponse = $bdd->query("SELECT * FROM groups WHERE id='{$donnees['artiste']}'");
+            $albumReponse = $bdd->query("SELECT * FROM albums WHERE artiste='{$donnees['id']}'");
 
-            while($groupDonnees = $groupReponse->fetch()){
-                array_push($groupsToShow, $groupDonnees);
+            while ($albumDonnees = $albumReponse->fetch()){
+                array_push($albumsToShow, $albumDonnees);
             }
         }
 
         if (!$correspondingSearch){
-            $reponse = $bdd->query("SELECT * FROM groups WHERE nom LIKE '{$searchArg}%'");
+            $reponse = $bdd->query("SELECT * FROM albums WHERE nom LIKE '{$searchArg}%'");
 
             while($donnees = $reponse->fetch()){
-                $correspondingType = 0;
                 $correspondingSearch = true;
-                array_push($groupsToShow, $donnees);
+                array_push($albumsToShow, $donnees);
 
-                $albumReponse = $bdd->query("SELECT * FROM albums WHERE artiste='{$donnees['id']}'");
+                $groupReponse = $bdd->query("SELECT * FROM groupes WHERE id='{$donnees['artiste']}'");
 
-                while ($albumDonnees = $albumReponse->fetch()){
-                    array_push($albumsToShow, $albumDonnees);
+                while($groupDonnees = $groupReponse->fetch()){
+                    array_push($groupsToShow, $groupDonnees);
                 }
             }
         }
@@ -54,7 +53,7 @@
             array_push($albumsToShow, $donnees);
         }
 
-        $reponse = $bdd->query("SELECT * FROM groups ");
+        $reponse = $bdd->query("SELECT * FROM groupes ");
 
         while($donnees = $reponse->fetch()){
             array_push($groupsToShow, $donnees);
@@ -132,7 +131,7 @@
             if ($correspondingSearch || $searchArg == null){
                 foreach($groupsToShow as $group) {
                     $groupName = $group['nom'];
-                    $groupGenres = explode("/*/", $group['tags']);
+                    $groupGenres = explode("/*/", $group['genre']);
 
                     echo "<div class='groupCard'>
                         <section class='groupCard-Img-Section'>
@@ -191,7 +190,7 @@
 
                         echo "<div class='albumCard'>
                                 <section class='albumCard-pochette-Section'>
-                                    <img class='albumCard-pochette' src='albumsArt/$album_pochette_url'/>
+                                    <img class='albumCard-pochette' src='$album_pochette_url'/>
                                 </section>
                     
                                 <section class='albumCard-Info-Section'>
