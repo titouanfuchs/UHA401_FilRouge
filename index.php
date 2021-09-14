@@ -3,6 +3,14 @@
 
     $searchArg = null;
 
+    $showInfo = false;
+    $showID = -1;
+
+    if (isset($_GET['info'])){
+        $showID = $_GET['info'];
+        $showInfo = true;
+    }
+
     if (isset($_GET['search'])){
         $searchArg = $_GET['search'];
     }
@@ -95,6 +103,18 @@
 <body>
 <div class="topAnchor" id="top"></div>
 
+<?php
+    //Affichage des infos détaillées d'un album
+    if($showInfo){
+        echo '<div class="infoBackground">
+                <div class="bigInfo">
+                    <a href="./">X</a>
+                </div>
+              </div>';
+    }
+?>
+
+
 <header class="mainHeader">
     <section class="logoSection">
         <img src="images/Logo.png">
@@ -131,7 +151,7 @@
             if ($correspondingSearch || $searchArg == null){
                 foreach($groupsToShow as $group) {
                     $groupName = $group['nom'];
-                    $groupGenres = explode("/*/", $group['genre']);
+                    $groupGenres = explode(";", $group['genre']);
 
                     echo "<div class='groupCard'>
                         <section class='groupCard-Img-Section'>
@@ -188,31 +208,33 @@
                         $album_group = returnGroup($groupsToShow, $album_group_index);
                         $album_group_name = $album_group['nom'];
 
-                        echo "<div class='albumCard'>
-                                <section class='albumCard-pochette-Section'>
-                                    <img class='albumCard-pochette' src='$album_pochette_url'/>
-                                </section>
-                    
-                                <section class='albumCard-Info-Section'>
-                                    <section>
-                                        <h2>$album_name</h2>
+                        echo "<a href='?info={$album["id"]}'>
+                                <div class='albumCard'>
+                                    <section class='albumCard-pochette-Section'>
+                                        <img class='albumCard-pochette' src='$album_pochette_url'/>
                                     </section>
-                                    <section>
-                                        <h3>Groupe : $album_group_name</h3>
+                        
+                                    <section class='albumCard-Info-Section'>
+                                        <section>
+                                            <h2>$album_name</h2>
+                                        </section>
+                                        <section>
+                                            <h3>Groupe : $album_group_name</h3>
+                                        </section>
+                                        <section>
+                                            <h4>Sortie :$album_sortie</h4>
+                                        </section>
+                                        <section>
+                                            <h4>Piste(s):$album_pistes</h4>
+                                        </section>
                                     </section>
-                                    <section>
-                                        <h4>Sortie :$album_sortie</h4>
+                        
+                                    <section class='albumCard-Action-Section'>
+                                        <button>Je l'ai écouté !</button>
+                                        <button>Favoris</button>
                                     </section>
-                                    <section>
-                                        <h4>Piste(s):$album_pistes</h4>
-                                    </section>
-                                </section>
-                    
-                                <section class='albumCard-Action-Section'>
-                                    <button>Je l'ai écouté !</button>
-                                    <button>Favoris</button>
-                                </section>
-                            </div>";
+                                </div>
+                              <a/>";
                     }
                 }else{
                     echo "<div class='Card'>

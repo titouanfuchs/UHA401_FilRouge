@@ -411,6 +411,43 @@ footer{
     padding: 0px 1px;
 }
 
+/*--bigInfo--*/
+.bigInfo{
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    margin: auto;
+
+    height: 80%;
+    width: 70%;
+
+    background: whitesmoke;
+
+    border-radius: 20px;
+}
+
+.infoBackground{
+    z-index: 105;
+
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+
+    position: fixed;
+    top: 0%;
+    left: 0%;
+    right: 0%;
+    bottom: 0%;
+
+    margin: auto;
+    padding: 5px;
+
+    height: 100%;
+    width: 100%;
+}
+
 /*--Top--*/
 
 .topAnchor{
