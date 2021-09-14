@@ -53,7 +53,7 @@
             array_push($albumsToShow, $donnees);
         }
 
-        $reponse = $bdd->query("SELECT * FROM groupes ");
+        $reponse = $_SESSION['bdd']->query("SELECT * FROM groupes ");
 
         while($donnees = $reponse->fetch()){
             array_push($groupsToShow, $donnees);
