@@ -1,10 +1,10 @@
 <?php
-    $bdd = new PDO('mysql:host=localhost;dbname=musicpass;charset=utf8', 'root', 'root');
+    include ("connexion_base.php");
 
     $searchArg = null;
 
-    if (isset($_POST['search'])){
-        $searchArg = $_POST['search'];
+    if (isset($_GET['search'])){
+        $searchArg = $_GET['search'];
     }
 
     $groupsToShow = array();
@@ -17,13 +17,13 @@
 
     if ($searchArg != "" && isset($searchArg)){
 
-        $reponse = $bdd->query("SELECT * FROM groupes WHERE nom LIKE '{$searchArg}%'");
+        $reponse = $_SESSION['bdd']->query("SELECT * FROM groupes WHERE nom LIKE '{$searchArg}%'");
 
         while($donnees = $reponse->fetch()){
             $correspondingSearch = true;
             array_push($groupsToShow, $donnees);
 
-            $albumReponse = $bdd->query("SELECT * FROM albums WHERE artiste='{$donnees['id']}'");
+            $albumReponse = $_SESSION['bdd']->query("SELECT * FROM albums WHERE artiste='{$donnees['id']}'");
 
             while ($albumDonnees = $albumReponse->fetch()){
                 array_push($albumsToShow, $albumDonnees);
@@ -31,13 +31,13 @@
         }
 
         if (!$correspondingSearch){
-            $reponse = $bdd->query("SELECT * FROM albums WHERE nom LIKE '{$searchArg}%'");
+            $reponse = $_SESSION['bdd']->query("SELECT * FROM albums WHERE nom LIKE '{$searchArg}%'");
 
             while($donnees = $reponse->fetch()){
                 $correspondingSearch = true;
                 array_push($albumsToShow, $donnees);
 
-                $groupReponse = $bdd->query("SELECT * FROM groupes WHERE id='{$donnees['artiste']}'");
+                $groupReponse = $_SESSION['bdd']->query("SELECT * FROM groupes WHERE id='{$donnees['artiste']}'");
 
                 while($groupDonnees = $groupReponse->fetch()){
                     array_push($groupsToShow, $groupDonnees);
@@ -47,7 +47,7 @@
     }else{
         //Si aucune recherche n'est effectuée
 
-        $reponse = $bdd->query("SELECT * FROM albums");
+        $reponse = $_SESSION['bdd']->query("SELECT * FROM albums");
 
         while($donnees = $reponse->fetch()){
             array_push($albumsToShow, $donnees);
@@ -101,7 +101,7 @@
     </section>
 
     <section class="researchSection">
-        <form method="POST" name="MusicSearch">
+        <form method="GET" name="MusicSearch">
             <fieldset class="transparentFieldSet">
                 <input type="text" name="search" class="researchInput" placeholder="Recherche (Artiste, Album)" value="<?php echo $searchArg ?>"/>
                 <input type="submit" value="Rechercher" class="researchSubmit"/>
