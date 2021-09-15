@@ -1,8 +1,6 @@
 <?php
     include ("connexion_base.php");
 
-    $searchArg = null;
-
     $showInfo = false;
     $showID = -1;
 
@@ -12,7 +10,13 @@
     }
 
     if (isset($_GET['search'])){
-        $searchArg = $_GET['search'];
+        if ($_GET['search'] == ""){
+            $_SESSION['searchArg'] = null;
+        }else{
+            $_SESSION['searchArg'] = $_GET['search'];
+        }
+    }else{
+        $_SESSION['searchArg'] = null;
     }
 
     $groupsToShow = array();
@@ -23,9 +27,8 @@
 
     $reponse = null;
 
-    if ($searchArg != "" && isset($searchArg)){
-
-        $reponse = $_SESSION['bdd']->query("SELECT * FROM groupes WHERE nom LIKE '{$searchArg}%'");
+    if ($_SESSION['searchArg'] != null){
+        $reponse = $_SESSION['bdd']->query("SELECT * FROM groupes WHERE nom LIKE '{$_SESSION['searchArg']}%'");
 
         while($donnees = $reponse->fetch()){
             $correspondingSearch = true;
@@ -39,7 +42,7 @@
         }
 
         if (!$correspondingSearch){
-            $reponse = $_SESSION['bdd']->query("SELECT * FROM albums WHERE nom LIKE '{$searchArg}%'");
+            $reponse = $_SESSION['bdd']->query("SELECT * FROM albums WHERE nom LIKE '{$_SESSION['searchArg']}%'");
 
             while($donnees = $reponse->fetch()){
                 $correspondingSearch = true;
@@ -61,7 +64,7 @@
             array_push($albumsToShow, $donnees);
         }
 
-        $reponse = $_SESSION['bdd']->query("SELECT * FROM groupes ");
+        $reponse = $_SESSION['bdd']->query("SELECT * FROM groupes");
 
         while($donnees = $reponse->fetch()){
             array_push($groupsToShow, $donnees);
@@ -106,11 +109,28 @@
 <?php
     //Affichage des infos détaillées d'un album
     if($showInfo){
-        echo '<div class="infoBackground">
-                <div class="bigInfo">
-                    <a href="./">X</a>
-                </div>
-              </div>';
+        $albumRep = $_SESSION['bdd']->query("SELECT * FROM albums WHERE id='{$showID}' ");
+
+        while ($album = $albumRep->fetch()){
+            echo "<div class='infoBackground'>
+                    <div class='bigInfo''>
+                        <section class='infoHeader'>
+                            <a href='./?search={$_SESSION['searchArg']}'><button>X</button></a>
+                        </section>
+                        <section class='infoPochette'>
+                            
+                        </section>
+                        <section class='infoContainer'>
+                            <section class='infoLinks'>
+                        
+                            </section>
+                            <section class='infoPistes'>
+                            
+                            </section>
+                        </section>
+                    </div>
+                  </div>";
+        }
     }
 ?>
 
@@ -123,7 +143,7 @@
     <section class="researchSection">
         <form method="GET" name="MusicSearch">
             <fieldset class="transparentFieldSet">
-                <input type="text" name="search" class="researchInput" placeholder="Recherche (Artiste, Album)" value="<?php echo $searchArg ?>"/>
+                <input type="text" name="search" class="researchInput" placeholder="Recherche (Artiste, Album)" value="<?php if (isset($_SESSION['searchArg'])) { echo $_SESSION['searchArg'];}?>"/>
                 <input type="submit" value="Rechercher" class="researchSubmit"/>
             </fieldset>
             <fieldset class="transparentFieldSet">
@@ -144,13 +164,17 @@
 
     <section id="groupContent" class="groupContent">
         <?php
+            $useRandom = false;
             if ($correspondingSearch == false){
                 shuffle($groupsToShow);
+                $useRandom = true;
             }
 
-            if ($correspondingSearch || $searchArg == null){
+            if ($correspondingSearch || $useRandom){
                 foreach($groupsToShow as $group) {
                     $groupName = $group['nom'];
+                    $groupChanteur = $group['chanteur'];
+                    $groupOrigin = $group['origin'];
                     $groupGenres = explode(";", $group['genre']);
 
                     echo "<div class='groupCard'>
@@ -159,6 +183,8 @@
                         </section>        
                         <section class='groupCard-Info-Section'>
                             <h2>$groupName</h2>
+                            <h3>Chanteur : $groupChanteur</h3>
+                            <h3>Origine : $groupOrigin</h3>
                         </section>
                         <section class='groupCard-Genre-Section'>";
 
@@ -186,30 +212,23 @@
 
     <section id="albumContent" class="albumContent">
         <?php
+        $useRandom = false;
+        if ($correspondingSearch == false){
+            shuffle($albumsToShow);
+            $useRandom = true;
+        }
 
-            if (strtolower($searchArg) === "patate"){
-                echo "<img src='https://c.tenor.com/MynZDJ3KGiwAAAAC/mr-potato-work-out.gif' alt='kdo' title='kdo' />";
-            }elseif (strtolower($searchArg) === "pasteque"){
-                echo "<img src='https://c.tenor.com/unqFAepxyjcAAAAC/watermelon-watermelon-blast.gif' alt='kdo' title='kdo' />";
-            }elseif(strtolower($searchArg) === "reh2"){
-                echo "<img src='https://c.tenor.com/nJlxjsjqDLgAAAAC/tes-qui-tu-es-qui.gif' alt='kdo' title='kdo' />";
-            }else{
-                if ($correspondingSearch == false){
-                    shuffle($albumsToShow);
-                }
+        if ($correspondingSearch || $useRandom) {
+            foreach ($albumsToShow as $album) {
+                $album_pochette_url = $album['couverture'];
+                $album_name = $album['nom'];
+                $album_sortie = $album['sortie'];
+                $album_pistes = $album['pistes'];
+                $album_group_index = $album['artiste'];
+                $album_group = returnGroup($groupsToShow, $album_group_index);
+                $album_group_name = $album_group['nom'];
 
-                if ($correspondingSearch || $searchArg == null) {
-                    foreach ($albumsToShow as $album) {
-                        $album_pochette_url = $album['couverture'];
-                        $album_name = $album['nom'];
-                        $album_sortie = $album['sortie'];
-                        $album_pistes = $album['pistes'];
-                        $album_group_index = $album['artiste'];
-                        $album_group = returnGroup($groupsToShow, $album_group_index);
-                        $album_group_name = $album_group['nom'];
-
-                        echo "<a href='?info={$album["id"]}'>
-                                <div class='albumCard'>
+                echo "<div class='albumCard'>
                                     <section class='albumCard-pochette-Section'>
                                         <img class='albumCard-pochette' src='$album_pochette_url'/>
                                     </section>
@@ -232,24 +251,23 @@
                                     <section class='albumCard-Action-Section'>
                                         <button>Je l'ai écouté !</button>
                                         <button>Favoris</button>
+                                        <a href='./?info={$album['id']}&search={$_SESSION['searchArg']}'><button>Plus d'infos</button></a>
                                     </section>
-                                </div>
-                              <a/>";
-                    }
-                }else{
-                    echo "<div class='Card'>
+                                </div>";
+            }
+        }else{
+            echo "<div class='Card'>
                               <div class='noResult '>
                                 <h1>Aucun résultat</h1>
                               </div>
                           </div>";
-                }
-            }
+        }
 
         ?>
     </section>
 </section>
 <footer>
-    <a href="#top"><img title="je ne suis présent que pour combler un trou béant" style="width: 15%; position: relative;left: 50%;" src="https://www.avantjetaisriche.com/wp-content/uploads/2015/06/monsieur-mr-patate-homer-simpson.jpg"/></a>
+    <img title="je ne suis présent que pour combler un trou béant" style="width: 15%; position: relative;left: 50%;" src="https://www.avantjetaisriche.com/wp-content/uploads/2015/06/monsieur-mr-patate-homer-simpson.jpg"/>
 </footer>
 </body>
 </html>
