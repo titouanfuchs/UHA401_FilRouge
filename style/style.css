@@ -413,7 +413,8 @@ footer{
 
 /*--bigInfo--*/
 .bigInfo{
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;
 
     display: flex;
     flex-wrap: wrap;
@@ -428,7 +429,7 @@ footer{
     right: 0;
 
     margin: auto;
-    padding: 5px;
+    padding: 10px;
 
     height: 80%;
     width: 70%;
@@ -463,23 +464,32 @@ footer{
     width: 100%;
     height: 5%;
 
-    border: 1px black dotted;
+    border-radius: 5px;
+    background: whitesmoke;
+    box-shadow: 0px 4px 4px rgba(0,0,0,0.4);
 }
 
 .infoPochetteContainer{
+    padding: 10px;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     margin-top: 5px;
-    width: 40%;
-    height: 94%;
-    border: 1px black dotted;
+    width: 35em;
+    height: 55em;
+    /*border: 1px black dotted;*/
+
+    border-radius: 10px;
+    box-shadow: inset 0px 6px 6px rgba(0,0,0,0.4);
+    background: #d6d6d6;
 }
 
 .infoPochette{
     width: 100%;
     height: 50%;
     display: flex;
-    border: 1px black dotted;
+    flex-wrap: nowrap;
+    /*border: 1px black dotted;*/
 
     justify-content: center;
 }
@@ -488,8 +498,14 @@ footer{
     width: 100%;
     height: fit-content;
 
-    border: 1px black dotted;
+    margin-top: 10px;
+
+    /*border: 1px black dotted;*/
     text-align: center;
+
+    border-radius: 5px;
+    background: whitesmoke;
+    box-shadow: 0px 4px 4px rgba(0,0,0,0.4);
 }
 
 .infoTitre h1{
@@ -499,28 +515,46 @@ footer{
 
 .infoPochette image{
     width: 80%;
+    height: auto;
     display: block;
 }
 
 .infoContainer{
     padding: 5px;
-    height: 94%;
-    width: 59%;
+    height: 50em;
+    width: 55em;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 .infoLinks{
     width: 100%;
-    height: 2.5em;
-    padding-bottom: 5px;
+    height: 4em;
 
-    border: 1px black dotted;
+    margin-bottom: 5px;
+
+    /*border: 1px black dotted;*/
+
+    border-radius: 10px;
+    box-shadow: inset 0px 6px 6px rgba(0,0,0,0.4);
+    background: #d6d6d6;
 }
 
 .infoPistes{
     width: 100%;
     height: 80%;
 
-    border: 1px black dotted;
+    /*border: 1px black dotted;*/
+
+    border-radius: 10px;
+    box-shadow: inset 0px 6px 6px rgba(0,0,0,0.4);
+    background: #d6d6d6;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
 }
 
 /*--Top--*/

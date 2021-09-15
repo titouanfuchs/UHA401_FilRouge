@@ -130,7 +130,7 @@
                         
                             </section>
                             <section class='infoPistes'>
-                            
+                                
                             </section>
                         </section>
                     </div>
@@ -171,7 +171,7 @@
         <?php
             $useRandom = false;
             if ($correspondingSearch == false){
-                shuffle($groupsToShow);
+                //shuffle($groupsToShow);
                 $useRandom = true;
             }
 
@@ -219,7 +219,7 @@
         <?php
         $useRandom = false;
         if ($correspondingSearch == false){
-            shuffle($albumsToShow);
+            //shuffle($albumsToShow);
             $useRandom = true;
         }
 
