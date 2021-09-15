@@ -466,13 +466,40 @@ footer{
     border: 1px black dotted;
 }
 
-.infoPochette{
+.infoPochetteContainer{
     display: flex;
     flex-direction: column;
     margin-top: 5px;
     width: 40%;
     height: 94%;
     border: 1px black dotted;
+}
+
+.infoPochette{
+    width: 100%;
+    height: 50%;
+    display: flex;
+    border: 1px black dotted;
+
+    justify-content: center;
+}
+
+.infoTitre{
+    width: 100%;
+    height: fit-content;
+
+    border: 1px black dotted;
+    text-align: center;
+}
+
+.infoTitre h1{
+    font-size: 2.5em;
+    display: block;
+}
+
+.infoPochette image{
+    width: 80%;
+    display: block;
 }
 
 .infoContainer{

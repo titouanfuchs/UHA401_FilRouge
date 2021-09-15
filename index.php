@@ -117,8 +117,13 @@
                         <section class='infoHeader'>
                             <a href='./?search={$_SESSION['searchArg']}'><button>X</button></a>
                         </section>
-                        <section class='infoPochette'>
-                            
+                        <section class='infoPochetteContainer'>
+                            <section class='infoPochette'>
+                                <img src='{$album['couverture']}'/>
+                            </section>
+                            <section class='infoTitre'>
+                                <h1>"; echo $album['nom']; echo "</h1>
+                            </section>
                         </section>
                         <section class='infoContainer'>
                             <section class='infoLinks'>
