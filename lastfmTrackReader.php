@@ -1,7 +1,7 @@
 <?php
 
 function readData($group, $album){
-    $url = 'https://www.last.fm/fr/music/'. str_replace(" ", "+", $group) .'/'. str_replace(" ", "+", $album)  .'/+partial/tracks';
+    $url = returnURL($group, $album).'/+partial/tracks';
     $data = file_get_contents($url);
 
     $DOM = new DOMDocument();
@@ -28,6 +28,10 @@ function readData($group, $album){
     }
 
     return $rows;
+}
+
+function returnURL($group, $album){
+    return 'https://www.last.fm/fr/music/'. str_replace(" ", "+", $group) .'/'. str_replace(" ", "+", $album);
 }
 
 ?>

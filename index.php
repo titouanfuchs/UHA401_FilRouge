@@ -114,10 +114,35 @@
         $aDataTableDetailHTML = null;
         $aDataTableHeaderHTML = null;
 
+        $i = 1;
+
         while ($album = $albumRep->fetch()){
             $group = returnGroup($groupsToShow, $album['artiste']);
+            $tracks = array();
 
-            $data = readData($group['nom'], $album['nom']);
+            $reponse = $_SESSION['bdd']->query("SELECT * FROM details WHERE album={$group['id']}");
+            $hadDetails = false;
+            while($donnees = $reponse->fetch()) {
+                $hadDetails = true;
+                $tracks = json_decode($donnees['tracks'], true);
+            }
+
+            if (!$hadDetails){
+                $data = readData($group['nom'], $album['nom']);
+                $newDetail = array();
+
+                foreach ($data as $track){
+                    $newTrack = array('id'=>$track[0], 'nom'=>$track[3], 'duree'=>$track[7]);
+                    array_push($tracks, $newTrack);
+                }
+
+                $req = $_SESSION['bdd']->prepare('INSERT INTO details(album, lastfm, tracks) VALUES(:album, :lastfm, :tracks)');
+                $req->execute(array(
+                    'album' => $album['id'],
+                    'lastfm' => returnURL($group['nom'], $album['nom']),
+                    'tracks' => json_encode($tracks)
+                )) or die(print_r($req->errorInfo()));
+            }
 
             echo "<div class='infoBackground'>
                     <div class='bigInfo''>
@@ -138,8 +163,21 @@
                             </section>
                             <section class='infoPistes'>
                             ";
-                                foreach ($data as $track){
-                                    echo $track[3];
+                                foreach ($tracks as $track){
+                                    echo "
+                                    <div class='track'>
+                                        <section class='track-id-section'>
+                                            {$i}
+                                        </section>                             
+                                        <section class='track-title-section'>
+                                            {$track['nom']}
+                                        </section>
+                                        <section class='track-duration-section'>
+                                            {$track['duree']}                                        
+                                        </section>     
+                                    </div>                                    
+                                    ";
+                                    $i++;
                                 }
                                 echo "
                             </section>
