@@ -1,5 +1,6 @@
 <?php
     include ("connexion_base.php");
+    include ("lastfmTrackReader.php");
 
     $showInfo = false;
     $showID = -1;
@@ -110,8 +111,14 @@
     //Affichage des infos détaillées d'un album
     if($showInfo){
         $albumRep = $_SESSION['bdd']->query("SELECT * FROM albums WHERE id='{$showID}' ");
+        $aDataTableDetailHTML = null;
+        $aDataTableHeaderHTML = null;
 
         while ($album = $albumRep->fetch()){
+            $group = returnGroup($groupsToShow, $album['artiste']);
+
+            $data = readData($group['nom'], $album['nom']);
+
             echo "<div class='infoBackground'>
                     <div class='bigInfo''>
                         <section class='infoHeader'>
@@ -130,7 +137,11 @@
                         
                             </section>
                             <section class='infoPistes'>
-                                
+                            ";
+                                foreach ($data as $track){
+                                    echo $track[3];
+                                }
+                                echo "
                             </section>
                         </section>
                     </div>
