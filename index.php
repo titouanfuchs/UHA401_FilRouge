@@ -2,6 +2,8 @@
     include ("connexion_base.php");
     include ("lastfmTrackReader.php");
 
+    $bdd = new PDO('mysql:host=localhost;dbname=musicpass;charset=utf8', 'musicPass', 'UqnTy9qK72qiMen1');
+
     $showInfo = false;
     $showID = -1;
 
@@ -14,7 +16,7 @@
         if ($_GET['search'] == ""){
             $_SESSION['searchArg'] = null;
         }else{
-            $_SESSION['searchArg'] = $_GET['search'];
+            $_SESSION['searchArg'] = htmlspecialchars($_GET['search']);
         }
     }else{
         $_SESSION['searchArg'] = null;
@@ -29,13 +31,13 @@
     $reponse = null;
 
     if ($_SESSION['searchArg'] != null){
-        $reponse = $_SESSION['bdd']->query("SELECT * FROM groupes WHERE nom LIKE '{$_SESSION['searchArg']}%'");
+        $reponse = $bdd->query("SELECT * FROM groupes WHERE nom LIKE '{$_SESSION['searchArg']}%'");
 
         while($donnees = $reponse->fetch()){
             $correspondingSearch = true;
             array_push($groupsToShow, $donnees);
 
-            $albumReponse = $_SESSION['bdd']->query("SELECT * FROM albums WHERE artiste='{$donnees['id']}'");
+            $albumReponse = $bdd->query("SELECT * FROM albums WHERE artiste='{$donnees['id']}'");
 
             while ($albumDonnees = $albumReponse->fetch()){
                 array_push($albumsToShow, $albumDonnees);
@@ -43,13 +45,13 @@
         }
 
         if (!$correspondingSearch){
-            $reponse = $_SESSION['bdd']->query("SELECT * FROM albums WHERE nom LIKE '{$_SESSION['searchArg']}%'");
+            $reponse = $bdd->query("SELECT * FROM albums WHERE nom LIKE '{$_SESSION['searchArg']}%'");
 
             while($donnees = $reponse->fetch()){
                 $correspondingSearch = true;
                 array_push($albumsToShow, $donnees);
 
-                $groupReponse = $_SESSION['bdd']->query("SELECT * FROM groupes WHERE id='{$donnees['artiste']}'");
+                $groupReponse = $bdd->query("SELECT * FROM groupes WHERE id='{$donnees['artiste']}'");
 
                 while($groupDonnees = $groupReponse->fetch()){
                     array_push($groupsToShow, $groupDonnees);
@@ -59,13 +61,13 @@
     }else{
         //Si aucune recherche n'est effectuée
 
-        $reponse = $_SESSION['bdd']->query("SELECT * FROM albums");
+        $reponse = $bdd->query("SELECT * FROM albums");
 
         while($donnees = $reponse->fetch()){
             array_push($albumsToShow, $donnees);
         }
 
-        $reponse = $_SESSION['bdd']->query("SELECT * FROM groupes");
+        $reponse = $bdd->query("SELECT * FROM groupes");
 
         while($donnees = $reponse->fetch()){
             array_push($groupsToShow, $donnees);
@@ -110,7 +112,7 @@
 <?php
     //Affichage des infos détaillées d'un album
     if($showInfo){
-        $albumRep = $_SESSION['bdd']->query("SELECT * FROM albums WHERE id='{$showID}' ");
+        $albumRep = $bdd->query("SELECT * FROM albums WHERE id='{$showID}' ");
         $aDataTableDetailHTML = null;
         $aDataTableHeaderHTML = null;
 
@@ -120,7 +122,7 @@
             $group = returnGroup($groupsToShow, $album['artiste']);
             $tracks = array();
 
-            $reponse = $_SESSION['bdd']->query("SELECT * FROM details WHERE album={$group['id']}");
+            $reponse = $bdd->query("SELECT * FROM details WHERE album={$album['id']}");
             $hadDetails = false;
             while($donnees = $reponse->fetch()) {
                 $hadDetails = true;
@@ -131,17 +133,19 @@
                 $data = readData($group['nom'], $album['nom']);
                 $newDetail = array();
 
-                foreach ($data as $track){
-                    $newTrack = array('id'=>$track[0], 'nom'=>$track[3], 'duree'=>$track[7]);
-                    array_push($tracks, $newTrack);
-                }
+                if (count($data) > 0){
+                    foreach ($data as $track){
+                        $newTrack = array('id'=>$track[0], 'nom'=>$track[3], 'duree'=>$track[7]);
+                        array_push($tracks, $newTrack);
+                    }
 
-                $req = $_SESSION['bdd']->prepare('INSERT INTO details(album, lastfm, tracks) VALUES(:album, :lastfm, :tracks)');
-                $req->execute(array(
-                    'album' => $album['id'],
-                    'lastfm' => returnURL($group['nom'], $album['nom']),
-                    'tracks' => json_encode($tracks)
-                )) or die(print_r($req->errorInfo()));
+                    $req = $bdd->prepare('INSERT INTO details(album, lastfm, tracks) VALUES(:album, :lastfm, :tracks)');
+                    $req->execute(array(
+                        'album' => $album['id'],
+                        'lastfm' => returnURL($group['nom'], $album['nom']),
+                        'tracks' => json_encode($tracks)
+                    )) or die(print_r($req->errorInfo()));
+                }
             }
 
             echo "<div class='infoBackground'>
@@ -219,7 +223,7 @@
     <section id="groupContent" class="groupContent">
         <?php
             $useRandom = false;
-            if ($correspondingSearch == false){
+            if ($correspondingSearch == false && $_SESSION['searchArg'] == null){
                 //shuffle($groupsToShow);
                 $useRandom = true;
             }
@@ -267,7 +271,7 @@
     <section id="albumContent" class="albumContent">
         <?php
         $useRandom = false;
-        if ($correspondingSearch == false){
+        if ($correspondingSearch == false && $_SESSION['searchArg'] == null){
             //shuffle($albumsToShow);
             $useRandom = true;
         }
