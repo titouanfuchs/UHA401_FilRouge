@@ -7,13 +7,12 @@
         $groupOrigin = $_GET['groupOrigin'];
         $groupGenre = $_GET['groupGenre'];
 
-        $req = $_SESSION['bdd']->prepare('INSERT INTO groupes(nom, chanteur, origin, genre, default_entity) VALUES(:nom, :chanteur, :origin, :genre, :default_val)');
+        $req = $bdd->prepare('INSERT INTO groupes(nom, chanteur, origin, genre) VALUES(:nom, :chanteur, :origin, :genre)');
         $req->execute(array(
             'nom' => $groupName,
             'chanteur' => $groupChanteur,
             'origin' => $groupOrigin,
-            'genre' => $groupGenre,
-            'default_val' => "false"
+            'genre' => $groupGenre
         )) or die(print_r($req->errorInfo()));
     }
 ?>
