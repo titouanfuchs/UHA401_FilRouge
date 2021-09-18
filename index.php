@@ -2,7 +2,7 @@
     include ("connexion_base.php");
     include ("lastfmTrackReader.php");
 
-    $bdd = new PDO('mysql:host=localhost;dbname=musicpass;charset=utf8', 'musicPass', 'UqnTy9qK72qiMen1');
+    $bdd = new PDO('mysql:host=localhost;dbname=musicpass;charset=utf8', "{$_SESSION['user']}", "{$_SESSION['pass']}");
 
     $showInfo = false;
     $showID = -1;
