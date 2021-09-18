@@ -117,6 +117,90 @@
 <body>
 <div class="topAnchor" id="top"></div>
 
+<?php
+    //Affichage des infos détaillées d'un album
+    if($showInfo){
+        $albumRep = $bdd->query("SELECT * FROM albums WHERE id='{$showID}' ");
+        $aDataTableDetailHTML = null;
+        $aDataTableHeaderHTML = null;
+
+        $i = 1;
+
+        while ($album = $albumRep->fetch()){
+            $group = returnGroup($groupsToShow, $album['artiste']);
+            $tracks = array();
+
+            $reponse = $bdd->query("SELECT * FROM details WHERE album={$album['id']}");
+            $hadDetails = false;
+            while($donnees = $reponse->fetch()) {
+                $hadDetails = true;
+                $tracks = json_decode($donnees['tracks'], true);
+            }
+
+            if (!$hadDetails){
+                $data = readData($group['nom'], $album['nom']);
+                $newDetail = array();
+
+                if (count($data) > 0){
+                    foreach ($data as $track){
+                        $newTrack = array('id'=>$track[0], 'nom'=>$track[3], 'duree'=>$track[7]);
+                        array_push($tracks, $newTrack);
+                    }
+
+                    $req = $bdd->prepare('INSERT INTO details(album, lastfm, tracks) VALUES(:album, :lastfm, :tracks)');
+                    $req->execute(array(
+                        'album' => $album['id'],
+                        'lastfm' => returnURL($group['nom'], $album['nom']),
+                        'tracks' => json_encode($tracks)
+                    )) or die(print_r($req->errorInfo()));
+                }
+            }
+
+            echo "<div class='infoBackground'>
+                    <div class='bigInfo''>
+                        <section class='infoHeader'>
+                            <a href='./?search={$_SESSION['searchArg']}'><button>X</button></a>
+                        </section>
+                        <section class='infoPochetteContainer'>
+                            <section class='infoPochette'>
+                                <img src='{$album['couverture']}'/>
+                            </section>
+                            <section class='infoTitre'>
+                                <h1>"; echo $album['nom']; echo "</h1>
+                            </section>
+                        </section>
+                        <section class='infoContainer'>
+                            <section class='infoLinks'>
+                        
+                            </section>
+                            <section class='infoPistes'>
+                            ";
+                                foreach ($tracks as $track){
+                                    echo "
+                                    <div class='track'>
+                                        <section class='track-id-section'>
+                                            {$i}
+                                        </section>                             
+                                        <section class='track-title-section'>
+                                            {$track['nom']}
+                                        </section>
+                                        <section class='track-duration-section'>
+                                            {$track['duree']}                                        
+                                        </section>     
+                                    </div>                                    
+                                    ";
+                                    $i++;
+                                }
+                                echo "
+                            </section>
+                        </section>
+                    </div>
+                  </div>";
+        }
+    }
+?>
+
+
 <header class="mainHeader">
     <section class="logoSection">
         <img src="images/Logo.png">
