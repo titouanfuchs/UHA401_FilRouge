@@ -199,8 +199,6 @@
         }
     }
 ?>
-
-
 <header class="mainHeader">
     <section class="logoSection">
         <img src="images/Logo.png">
