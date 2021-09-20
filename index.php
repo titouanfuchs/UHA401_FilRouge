@@ -2,6 +2,8 @@
     include ("connexion_base.php");
     include ("lastfmTrackReader.php");
 
+    global $bdd;
+
     if (isset($_GET['action'])){ //Option permettant de remettre la base de données en l'état d'origine
         if ($_GET['action'] == 'RESET'){
             $bdd->query("DELETE FROM albums WHERE default_entity='false'");
