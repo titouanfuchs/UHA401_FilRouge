@@ -23,6 +23,16 @@ switch($request_method){
             echo "Accès non autorisé !";
         }
         break;
+    case 'PUT':
+        if ($headers['Authorization'] == "jailedroit") {
+            editAlbumDetails($_GET['album']);
+        }else{
+            header('WWW-Authenticate: Basic realm="My Realm"');
+            header('HTTP/1.0 401 Unauthorized');
+
+            echo "Accès non autorisé !";
+        }
+        break;
     default:
         header("HTTP/1.0 405 Method Not Allowed");
         break;
@@ -60,4 +70,10 @@ function getAlbumDetails($id = "0"){
 
     header('Content-Type: application/json');
     echo json_encode($reponse, JSON_PRETTY_PRINT);
+}
+
+function editAlbumDetails($id){
+    global $sqli_bdd;
+
+
 }
