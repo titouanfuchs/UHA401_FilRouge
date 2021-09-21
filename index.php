@@ -12,6 +12,12 @@
         }
     }
 
+    if (isset($_GET['albumPage'])){
+        $_SESSION['AlbumPage'] = $_GET['albumPage'];
+    }else{
+        $_SESSION['AlbumPage'] = 0;
+    }
+
     //Details
     $showInfo = false;
     $showID = -1;
@@ -37,6 +43,16 @@
 
     $correspondingSearch = false;
     $correspondingType = -1;
+
+    $countAlbum = 0;
+    $countAlbumresult = $bdd->query("SELECT COUNT(*) FROM albums");
+
+    while($donnees = $countAlbumresult->fetch()){
+        $countAlbum = $donnees[0];
+    }
+
+    $albumPageCount = intval($countAlbum / 5) + 1;
+
 
     $reponse = null;
 
@@ -70,8 +86,8 @@
         }
     }else{
         //Si aucune recherche n'est effectuée
-
-        $reponse = $bdd->query("SELECT * FROM albums");
+        $AlbumPaginationCalc = 1 + 5 * $_SESSION['AlbumPage'];
+        $reponse = $bdd->query("SELECT * FROM albums WHERE id >= {$AlbumPaginationCalc} LIMIT 5");
 
         while($donnees = $reponse->fetch()){
             array_push($albumsToShow, $donnees);
@@ -213,7 +229,6 @@
                 <input type="submit" value="Rechercher" class="researchSubmit"/>
             </fieldset>
             <fieldset class="transparentFieldSet">
-                <input type="submit" value="Proposez-moi quelque chose de nouveau !" class="randomSubmit" title="Choisis aléatoirement une musique, ou un album !"/>
             </fieldset>
         </form>
     </section>
@@ -276,6 +291,15 @@
         <h1>Albums</h1>
     </section>
 
+    <section class="contentHeader">
+        <?php
+            for ($i = 0; $i < $albumPageCount; $i++){
+                $page = $i + 1;
+                echo "<a href='./?search={$_SESSION['searchArg']}&albumPage={$i}'><button>{$page}</button></a>";
+            }
+        ?>
+    </section>
+
     <section id="albumContent" class="albumContent">
         <?php
         $useRandom = false;
@@ -315,15 +339,13 @@
                                     </section>
                         
                                     <section class='albumCard-Action-Section'>
-                                        <button>Je l'ai écouté !</button>
-                                        <button>Favoris</button>
-                                        <a href='./?info={$album['id']}&search={$_SESSION['searchArg']}'><button>Plus d'infos</button></a>
+                                        <a href='./?info={$album['id']}&search={$_SESSION['searchArg']}&albumPage={$_SESSION['AlbumPage']}'><button>Plus d'infos</button></a>
                                     </section>
                                 </div>";
             }
         }else{
             echo "<div class='Card'>
-                              <div class='noResult '>
+                              <div class='noResult'>
                                 <h1>Aucun résultat</h1>
                               </div>
                           </div>";
