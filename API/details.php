@@ -29,8 +29,6 @@ switch($request_method){
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
-
-            echo "Accès non autorisé !";
         }
         break;
     case 'DELETE':
@@ -39,8 +37,6 @@ switch($request_method){
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
-
-            echo "Accès non autorisé !";
         }
         break;
     default:
@@ -137,10 +133,18 @@ function removeAlbumDetails($id){
 
     $reponse = array();
 
-    if (mysqli_query($sqli_bdd, "DELETE FROM details WHERE album={$id}")){
-        $reponse = array('status' => 1, 'status_message' => 'Details retirés');
+    if (!isset($_GET['album'])){
+        if (mysqli_query($sqli_bdd, "TRUNCATE details")){
+            $reponse = array('status' => 1, 'status_message' => 'Details retirés');
+        }else{
+            $reponse = array('status' => 0, 'status_message' => 'Une erreur est survenue lors du retrait des details');
+        }
     }else{
-        $reponse = array('status' => 0, 'status_message' => 'Une erreur est survenue lors du retrait des details');
+        if (mysqli_query($sqli_bdd, "DELETE FROM details WHERE album={$id}")){
+            $reponse = array('status' => 1, 'status_message' => 'Details retirés');
+        }else{
+            $reponse = array('status' => 0, 'status_message' => 'Une erreur est survenue lors du retrait des details');
+        }
     }
 
     header('Content-Type: application/json');
