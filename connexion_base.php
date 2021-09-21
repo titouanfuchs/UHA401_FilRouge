@@ -3,6 +3,8 @@
     $_SESSION['user'] = 'root';
     $_SESSION['pass'] = '';
 
+    $_SESSION['APIPASS'] = 'Parcequejailedroit';
+
     global $bdd;
     $bdd = new PDO('mysql:host=localhost;dbname=musicpass;charset=utf8', "{$_SESSION['user']}", "{$_SESSION['pass']}");
     global $sqli_bdd;

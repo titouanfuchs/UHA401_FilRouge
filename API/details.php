@@ -14,7 +14,7 @@ switch($request_method){
         }
         break;
     case 'POST':
-        if ($headers['Authorization'] == "jailedroit") {
+        if ($headers['Authorization'] == $_SESSION['APIPASS']) {
             postAlbumDetails();
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
@@ -24,8 +24,18 @@ switch($request_method){
         }
         break;
     case 'PUT':
-        if ($headers['Authorization'] == "jailedroit") {
+        if ($headers['Authorization'] == $_SESSION['APIPASS']) {
             editAlbumDetails($_GET['album']);
+        }else{
+            header('WWW-Authenticate: Basic realm="My Realm"');
+            header('HTTP/1.0 401 Unauthorized');
+
+            echo "Accès non autorisé !";
+        }
+        break;
+    case 'DELETE':
+        if ($headers['Authorization'] == $_SESSION['APIPASS']) {
+            removeAlbumDetails($_GET['album']);
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
@@ -74,6 +84,65 @@ function getAlbumDetails($id = "0"){
 
 function editAlbumDetails($id){
     global $sqli_bdd;
+    global $bdd;
 
+    $PUT = json_decode(file_get_contents('php://input'), true);
 
+    $success = true;
+    $reponse = array();
+    $done = false;
+    $echecat = "";
+
+    if (isset($PUT['album']) && $success){
+        if (!mysqli_query($sqli_bdd, "UPDATE details SET album={$PUT['album']} WHERE album={$id}")){
+            $success = false;
+            $echecat = "album";
+        }else{
+            $done = true;
+        }
+    }
+
+    if (isset($PUT['lastfm']) && $success){
+        if (!mysqli_query($sqli_bdd, "UPDATE details SET lastfm='{$PUT['lastfm']}' WHERE album={$id}")){
+            $success = false;
+            $echecat = "lastfm";
+        }else{
+            $done = true;
+        }
+    }
+
+    if (isset($PUT['tracks']) && $success){
+        $jsonTracks = json_encode($PUT['tracks']);
+
+        if (!mysqli_query($sqli_bdd, "UPDATE details SET tracks='{$jsonTracks}' WHERE album={$id}")){
+            $success = false;
+            $echecat = "tracks";
+        }else{
+            $done = true;
+        }
+    }
+
+    if($success){
+        $reponse = array('status' => 1, 'status_message' => 'Details mis à jour avec succès', 'done something' => $done);
+    }else{
+        $reponse = array('status' => 0, 'status_message' => 'Erreur lors de la mise à jours des détails', 'at' => $echecat);
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($reponse, JSON_PRETTY_PRINT);
+}
+
+function removeAlbumDetails($id){
+    global $sqli_bdd;
+
+    $reponse = array();
+
+    if (mysqli_query($sqli_bdd, "DELETE FROM details WHERE album={$id}")){
+        $reponse = array('status' => 1, 'status_message' => 'Details retirés');
+    }else{
+        $reponse = array('status' => 0, 'status_message' => 'Une erreur est survenue lors du retrait des details');
+    }
+
+    header('Content-Type: application/json');
+    echo json_encode($reponse, JSON_PRETTY_PRINT);
 }
