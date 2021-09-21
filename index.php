@@ -51,9 +51,6 @@
         $countAlbum = $donnees[0];
     }
 
-    $albumPageCount = intval($countAlbum / 5) + 1;
-
-
     $reponse = null;
 
     if ($_SESSION['searchArg'] != null){
@@ -68,6 +65,8 @@
             while ($albumDonnees = $albumReponse->fetch()){
                 array_push($albumsToShow, $albumDonnees);
             }
+
+            $countAlbum = count($albumsToShow);
         }
 
         if (!$correspondingSearch){
@@ -100,13 +99,16 @@
         }
     }
 
-    function returnGroup($groups, $id){
-        foreach ($groups as $group){
-            if ($group['id'] == $id){
-                return $group;
+    $albumPageCount = intval(ceil($countAlbum / 5));
+    echo $albumPageCount;
+
+        function returnGroup($groups, $id){
+            foreach ($groups as $group){
+                if ($group['id'] == $id){
+                    return $group;
+                }
             }
         }
-    }
 
     function returnAlbums($albums, $id){
         $result = array();
