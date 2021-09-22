@@ -18,6 +18,12 @@
         $_SESSION['AlbumPage'] = 0;
     }
 
+    if (isset($_GET['groupPage'])){
+        $_SESSION['GroupPage'] = $_GET['groupPage'];
+    }else{
+        $_SESSION['GroupPage'] = 0;
+    }
+
     //Details
     $showInfo = false;
     $showID = -1;
@@ -47,8 +53,15 @@
     $countAlbum = 0;
     $countAlbumresult = $bdd->query("SELECT COUNT(*) FROM albums");
 
+    $countGroup = 0;
+    $countGroupResult = $bdd->query("SELECT COUNT(*) FROM groupes");
+
     while($donnees = $countAlbumresult->fetch()){
         $countAlbum = $donnees[0];
+    }
+
+    while($donnees = $countGroupResult->fetch()){
+        $countGroup = $donnees[0];
     }
 
     $reponse = null;
@@ -65,8 +78,6 @@
             while ($albumDonnees = $albumReponse->fetch()){
                 array_push($albumsToShow, $albumDonnees);
             }
-
-            $countAlbum = count($albumsToShow);
         }
 
         if (!$correspondingSearch){
@@ -83,16 +94,20 @@
                 }
             }
         }
+
+        $countAlbum = count($albumsToShow);
+        $countGroup = count($groupsToShow);
     }else{
         //Si aucune recherche n'est effectuée
         $AlbumPaginationCalc = 1 + 5 * $_SESSION['AlbumPage'];
+        $GroupPaginationCalc = 1 + 5 * $_SESSION['GroupPage'];
         $reponse = $bdd->query("SELECT * FROM albums WHERE id >= {$AlbumPaginationCalc} LIMIT 5");
 
         while($donnees = $reponse->fetch()){
             array_push($albumsToShow, $donnees);
         }
 
-        $reponse = $bdd->query("SELECT * FROM groupes");
+        $reponse = $bdd->query("SELECT * FROM groupes WHERE id >= {$GroupPaginationCalc} LIMIT 5");
 
         while($donnees = $reponse->fetch()){
             array_push($groupsToShow, $donnees);
@@ -100,13 +115,14 @@
     }
 
     $albumPageCount = intval(ceil($countAlbum / 5));
-    echo $albumPageCount;
+    $groupPageCount = intval(ceil($countGroup / 5));
 
         function returnGroup($groups, $id){
-            foreach ($groups as $group){
-                if ($group['id'] == $id){
-                    return $group;
-                }
+            global $bdd;
+            $grouprep = $bdd->query("SELECT nom FROM groupes WHERE id = {$id}");
+
+            while ($donnees = $grouprep->fetch()){
+                return $donnees;
             }
         }
 
@@ -179,7 +195,7 @@
             echo "<div class='infoBackground'>
                     <div class='bigInfo''>
                         <section class='infoHeader'>
-                            <a href='./?search={$_SESSION['searchArg']}'><button>X</button></a>
+                            <a href='./?search={$_SESSION['searchArg']}&albumPage={$_SESSION['AlbumPage']}'><button>X</button></a>
                         </section>
                         <section class='infoPochetteContainer'>
                             <section class='infoPochette'>
@@ -245,6 +261,15 @@
         <h1>Groupes</h1>
     </section>
 
+    <section class="contentHeader" id="groupHeader">
+        <?php
+        for ($i = 0; $i < $groupPageCount; $i++){
+            $page = $i + 1;
+            echo "<a href='./?search={$_SESSION['searchArg']}&albumPage={$_SESSION['AlbumPage']}&groupPage={$i}'><button>{$page}</button></a>";
+        }
+        ?>
+    </section>
+
     <section id="groupContent" class="groupContent">
         <?php
             $useRandom = false;
@@ -297,7 +322,7 @@
         <?php
             for ($i = 0; $i < $albumPageCount; $i++){
                 $page = $i + 1;
-                echo "<a href='./?search={$_SESSION['searchArg']}&albumPage={$i}'><button>{$page}</button></a>";
+                echo "<a href='./?search={$_SESSION['searchArg']}&albumPage={$i}&groupPage={$_SESSION['GroupPage']}'><button>{$page}</button></a>";
             }
         ?>
     </section>
