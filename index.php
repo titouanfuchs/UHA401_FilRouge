@@ -1,6 +1,6 @@
 <?php
-    include ("connexion_base.php");
-    include ("lastfmTrackReader.php");
+    require ("connexion_base.php");
+    require ("lastfmTrackReader.php");
 
     global $bdd;
 
