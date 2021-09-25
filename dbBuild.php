@@ -3,11 +3,29 @@
 require ("connexion_base.php");
 
 function buildBD(){
+    global $bdd;
 
+    $sql = file_get_contents('sql/api_music.sql');
+
+    $bdd->query($sql);
+}
+
+function clearDB(){
+    global $bdd;
+
+    $bdd->query("SET FOREIGN_KEY_CHECKS = 0;");
+    $bdd->query("TRUNCATE genres");
+    $bdd->query("TRUNCATE details");
+    $bdd->query("TRUNCATE albums");
+    $bdd->query("TRUNCATE groupes");
+    $bdd->query("TRUNCATE link_groupe_genre");
+    $bdd->query("SET FOREIGN_KEY_CHECKS = 1;");
 }
 
 function fillBD(){
     global $bdd;
+
+    clearDB();
 
     $albums_data = file_get_contents('https://filrouge.uha4point0.fr/music/albums');
     $albums =json_decode($albums_data,true);
@@ -31,14 +49,18 @@ function fillBD(){
             $genreResult = $reponse->fetchAll();
 
             foreach ($genreResult as $id){
-                array_push($genreid, $id);
+                array_push($genreid, $id['id']);
             }
 
             $reponse = $bdd->query("SELECT * FROM groupes WHERE nom='{$groupe['nom']}'");
-            $genreResult = $reponse->fetchAll();
+            $groupeResult = $reponse->fetchAll();
 
-            if (count($genreResult) == 0){
-                pushGroupToBDD($groupe, $genreid);
+            if (count($groupeResult) == 0){
+                pushGroupToBDD($groupe);
+            }
+
+            foreach ($genreid as $genre_){
+                linkGroupToGenre($groupe['id'], $genre_);
             }
         }
     }
@@ -51,6 +73,17 @@ function fillBD(){
             pushAlbumToBDD($album);
         }
     }
+
+    header('Location: ./');
+}
+
+function linkGroupToGenre($groupid,$genreid){
+    global $bdd;
+    $req = $bdd->prepare('INSERT INTO link_groupe_genre(groupe, genre) VALUES(:groupe, :genre)');
+    $req->execute(array(
+        'groupe' => $groupid,
+        'genre' => $genreid
+    )) or die(print_r($req->errorInfo()));
 }
 
 function pushGenreToBDD($genre){ //Remplissage des genres;
@@ -61,15 +94,14 @@ function pushGenreToBDD($genre){ //Remplissage des genres;
     )) or die(print_r($req->errorInfo()));
 }
 
-function pushGroupToBDD($group, $genres){
+function pushGroupToBDD($group){
     global $bdd;
 
-    $req = $bdd->prepare('INSERT INTO groupes(nom, chanteur, origin, genre) VALUES(:nom, :chanteur, :origin, :genre)');
+    $req = $bdd->prepare('INSERT INTO groupes(nom, chanteur, origin) VALUES(:nom, :chanteur, :origin)');
     $req->execute(array(
         'nom' => $group['nom'],
         'chanteur' => $group['chanteur'],
-        'origin' => $group['origin'],
-        'genre' => json_encode($genres, JSON_PRETTY_PRINT)
+        'origin' => $group['origin']
     )) or die(print_r($req->errorInfo()));
 }
 
@@ -86,4 +118,6 @@ function pushAlbumToBDD($album){
     )) or die(print_r($req->errorInfo()));
 }
 
+buildBD();
 fillBD();
+//clearDB();

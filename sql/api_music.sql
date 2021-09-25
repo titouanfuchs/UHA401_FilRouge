@@ -79,9 +79,9 @@ CREATE TABLE `groupes` (
 -- Structure de la table `link_album_genre`
 --
 
-CREATE TABLE `link_album_genre` (
+CREATE TABLE `link_groupe_genre` (
   `id` int(11) NOT NULL,
-  `album` int(11) NOT NULL,
+  `groupe` int(11) NOT NULL,
   `genre` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -118,9 +118,9 @@ ALTER TABLE `groupes`
 --
 -- Index pour la table `link_album_genre`
 --
-ALTER TABLE `link_album_genre`
+ALTER TABLE `link_groupe_genre`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `album` (`album`),
+  ADD KEY `groupe` (`groupe`),
   ADD KEY `genre` (`genre`);
 
 --
@@ -154,7 +154,7 @@ ALTER TABLE `groupes`
 --
 -- AUTO_INCREMENT pour la table `link_album_genre`
 --
-ALTER TABLE `link_album_genre`
+ALTER TABLE `link_groupe_genre`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -176,9 +176,9 @@ ALTER TABLE `details`
 --
 -- Contraintes pour la table `link_album_genre`
 --
-ALTER TABLE `link_album_genre`
-  ADD CONSTRAINT `link_album_genre_ibfk_1` FOREIGN KEY (`album`) REFERENCES `groupes` (`id`),
-  ADD CONSTRAINT `link_album_genre_ibfk_2` FOREIGN KEY (`genre`) REFERENCES `genres` (`id`);
+ALTER TABLE `link_groupe_genre`
+  ADD CONSTRAINT `link_groupe_genre_ibfk_1` FOREIGN KEY (`groupe`) REFERENCES `groupes` (`id`),
+  ADD CONSTRAINT `link_groupe_genre_ibfk_2` FOREIGN KEY (`genre`) REFERENCES `genres` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

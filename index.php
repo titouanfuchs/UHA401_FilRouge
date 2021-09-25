@@ -283,7 +283,7 @@
                     $groupName = $group['nom'];
                     $groupChanteur = $group['chanteur'];
                     $groupOrigin = $group['origin'];
-                    $groupGenres = explode(";", $group['genre']);
+                    //$groupGenres = explode(";", $group['genre']);
 
                     echo "<div class='groupCard'>
                         <section class='groupCard-Img-Section'>
@@ -296,10 +296,9 @@
                         </section>
                         <section class='groupCard-Genre-Section'>";
 
-                    foreach ($groupGenres as $genre) {
+                    /*foreach ($groupGenres as $genre) {
                         echo "<button>$genre</button>";
-                    }
-
+                    }*/
                     echo "
                     </div>";
                 }
