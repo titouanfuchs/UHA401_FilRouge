@@ -8,14 +8,14 @@ $headers = apache_request_headers();
 switch($request_method){
     case 'GET':
         if (!empty($_GET["album"])){
-            getAlbumDetails($_GET["album"]);
+            getAlbum($_GET["album"]);
         }else{
-            getAlbumDetails();
+            getAlbum();
         }
         break;
     case 'POST':
         if ($headers['Authorization'] == $_SESSION['APIPASS']) {
-            postAlbumDetails();
+            postAlbum();
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
@@ -33,7 +33,7 @@ switch($request_method){
         break;
     case 'DELETE':
         if ($headers['Authorization'] == $_SESSION['APIPASS']) {
-            removeAlbumDetails($_GET['album']);
+            removeAlbum($_GET['album']);
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
