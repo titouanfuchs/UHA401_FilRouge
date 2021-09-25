@@ -2,6 +2,28 @@
 
 require ("connexion_base.php");
 
+if (isset($_GET['action'])){
+    switch ($_GET['action']){
+        case "clear":
+            clearDB();
+            redirect();
+            break;
+        case "build":
+            buildBD();
+            redirect();
+            break;
+        case "fill":
+            fillBD();
+            redirect();
+            break;
+        default:
+            total();
+            break;
+    }
+}else{
+    total();
+}
+
 function buildBD(){
     global $bdd;
 
@@ -24,8 +46,6 @@ function clearDB(){
 
 function fillBD(){
     global $bdd;
-
-    clearDB();
 
     $albums_data = file_get_contents('https://filrouge.uha4point0.fr/music/albums');
     $albums =json_decode($albums_data,true);
@@ -65,16 +85,14 @@ function fillBD(){
         }
     }
 
-    foreach ($albums as $album){
+    foreach ($albums as $album) {
         $reponse = $bdd->query("SELECT * FROM groupes WHERE id='{$album['artiste']}'");
         $groupReponse = $reponse->fetchAll();
 
-        if (count($groupReponse) != 0){
+        if (count($groupReponse) != 0) {
             pushAlbumToBDD($album);
         }
     }
-
-    header('Location: ./');
 }
 
 function linkGroupToGenre($groupid,$genreid){
@@ -118,6 +136,13 @@ function pushAlbumToBDD($album){
     )) or die(print_r($req->errorInfo()));
 }
 
-buildBD();
-fillBD();
-//clearDB();
+function redirect(){
+    header('Location: ./');
+}
+
+function total(){
+    buildBD();
+    clearDB();
+    fillBD();
+    redirect();
+}

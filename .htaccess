@@ -2,3 +2,4 @@ RewriteEngine On # Activer le module Rewrite
 RewriteRule ^details/?$ ./API/details.php [NC,L]
 RewriteRule ^[^/]+/(\d+)$ ./API/details.php?id=$1
 RewriteRule ^dbBuild/?$ ./dbBuild.php [NC,L]
+RewriteRule ^[^/]+/(\d+)$ ./dbBuild.php?action=$1

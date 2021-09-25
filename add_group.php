@@ -1,6 +1,8 @@
 <?php
     include("connexion_base.php");
 
+    global $bdd;
+
     if (isset($_GET['groupName'])){
         $groupName = $_GET['groupName'];
         $groupChanteur = $_GET['groupChanteur'];
