@@ -1,6 +1,6 @@
 <?php
 
-include ("../connexion_base.php");
+include ("./connexion_base.php");
 $request_method = $_SERVER["REQUEST_METHOD"];
 
 $headers = apache_request_headers();
@@ -8,9 +8,9 @@ $headers = apache_request_headers();
 switch($request_method){
     case 'GET':
         if (!empty($_GET["album"])){
-            getAlbum($_GET["album"]);
+            getGroup($_GET["album"]);
         }else{
-            getAlbum();
+            getGroup();
         }
         break;
     case 'POST':

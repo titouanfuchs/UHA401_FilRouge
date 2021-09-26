@@ -8,9 +8,9 @@ $headers = apache_request_headers();
 switch($request_method){
     case 'GET':
         if (!empty($_GET["album"])){
-            getAlbum($_GET["album"]);
+            getGroup($_GET["album"]);
         }else{
-            getAlbum();
+            getGroup();
         }
         break;
     case 'POST':

@@ -251,7 +251,7 @@
         <h1>Groupes</h1>
     </section>
 
-    <section class="contentHeader" id="groupHeader" onclick="addGroupCard()">
+    <section class="contentHeader" id="groupHeader">
         <?php
         for ($i = 0; $i < $groupPageCount; $i++){
             $page = $i + 1;

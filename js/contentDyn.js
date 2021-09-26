@@ -1,6 +1,11 @@
 const groupContent = document.getElementById("groupContent");
 
-document.onload = getGroupSearch();
+document.onload = initPage();
+
+function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
+    getGroupSearch();
+
+}
 
 function getGroupSearch(arg){
     groupContent.innerHTML = "";
