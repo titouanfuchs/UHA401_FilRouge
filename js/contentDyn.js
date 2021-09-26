@@ -8,9 +8,7 @@ function initPage(){ //Initialisation de la page avec tout les éléments de la 
 }
 
 function readAPI(api){
-    let data = null;
-
-    fetch("./API/" + api)
+    let data = fetch("./API/" + api)
         .then(function(res){
             if (res.ok){
                 return res.json();
@@ -18,7 +16,7 @@ function readAPI(api){
         })
         .then(function(value){
             console.log("Lecture API " + api + " OK");
-            data = value;
+            return value;
         })
         .catch(function (err){
             console.log(err);
@@ -32,7 +30,9 @@ function getGroupSearch(arg){
     if (arg == null){ //Quand pas de recherche effectuée;
         const groupes = readAPI("groupes");
 
-        console.log(groupes);
+        for (var groupe in groupes){
+            
+        }
 
         addGroupCard()
     }else{ //Quand une recherche est effectuée;
