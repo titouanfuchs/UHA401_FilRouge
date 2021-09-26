@@ -251,7 +251,7 @@
         <h1>Groupes</h1>
     </section>
 
-    <section class="contentHeader" id="groupHeader">
+    <section class="contentHeader" id="groupHeader" onclick="addGroupCard()">
         <?php
         for ($i = 0; $i < $groupPageCount; $i++){
             $page = $i + 1;
@@ -261,46 +261,7 @@
     </section>
 
     <section id="groupContent" class="groupContent">
-        <?php
-            $useRandom = false;
-            if ($correspondingSearch == false && $_SESSION['searchArg'] == null){
-                //shuffle($groupsToShow);
-                $useRandom = true;
-            }
 
-            if ($correspondingSearch || $useRandom){
-                foreach($groupsToShow as $group) {
-                    $groupName = $group['nom'];
-                    $groupChanteur = $group['chanteur'];
-                    $groupOrigin = $group['origin'];
-                    //$groupGenres = explode(";", $group['genre']);
-
-                    echo "<div class='groupCard'>
-                        <section class='groupCard-Img-Section'>
-                            <img class='albumCard-Img' src='images/NoCover.png'/>
-                        </section>        
-                        <section class='groupCard-Info-Section'>
-                            <h2>$groupName</h2>
-                            <h3>Chanteur : $groupChanteur</h3>
-                            <h3>Origine : $groupOrigin</h3>
-                        </section>
-                        <section class='groupCard-Genre-Section'>";
-
-                    /*foreach ($groupGenres as $genre) {
-                        echo "<button>$genre</button>";
-                    }*/
-                    echo "
-                    </div>";
-                }
-            }else{
-                echo "<div class='Card'>
-                              <div class='noResult '>
-                                <h1>Aucun résultat</h1>
-                              </div>
-                          </div>";
-            }
-
-        ?>
     </section>
 
     <section class="contentHeader">
@@ -373,5 +334,8 @@
 <footer>
     <img title="je ne suis présent que pour combler un trou béant" style="width: 15%; position: relative;left: 50%;" src="https://www.avantjetaisriche.com/wp-content/uploads/2015/06/monsieur-mr-patate-homer-simpson.jpg"/>
 </footer>
+
+<script type="text/javascript" src="js/contentDyn.js"></script>
+
 </body>
 </html>
