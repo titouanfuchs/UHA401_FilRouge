@@ -7,10 +7,33 @@ function initPage(){ //Initialisation de la page avec tout les éléments de la 
 
 }
 
+function readAPI(api){
+    let data = null;
+
+    fetch("./API/" + api)
+        .then(function(res){
+            if (res.ok){
+                return res.json();
+            }
+        })
+        .then(function(value){
+            console.log("Lecture API " + api + " OK");
+            data = value;
+        })
+        .catch(function (err){
+            console.log(err);
+        });
+    return data;
+}
+
 function getGroupSearch(arg){
     groupContent.innerHTML = "";
 
     if (arg == null){ //Quand pas de recherche effectuée;
+        const groupes = readAPI("groupes");
+
+        console.log(groupes);
+
         addGroupCard()
     }else{ //Quand une recherche est effectuée;
         addGroupCard();
