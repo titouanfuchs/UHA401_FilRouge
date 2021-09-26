@@ -184,17 +184,18 @@
                 }
             }
 
-            echo "<div class='infoBackground'>
+            ?>
+                <div class='infoBackground'>
                     <div class='bigInfo''>
                         <section class='infoHeader'>
-                            <a href='./?search={$_SESSION['searchArg']}&albumPage={$_SESSION['AlbumPage']}'><button>X</button></a>
+                            <?php echo"<a href='./?search={$_SESSION['searchArg']}&albumPage={$_SESSION['AlbumPage']}'><button>X</button></a>"; ?>
                         </section>
                         <section class='infoPochetteContainer'>
                             <section class='infoPochette'>
-                                <img src='{$album['couverture']}'/>
+                                <?php echo"<img src='{$album['couverture']}'/>"; ?>
                             </section>
                             <section class='infoTitre'>
-                                <h1>"; echo $album['nom']; echo "</h1>
+                                <h1> <?php echo $album['nom']; ?></h1>
                             </section>
                         </section>
                         <section class='infoContainer'>
@@ -202,29 +203,26 @@
                         
                             </section>
                             <section class='infoPistes'>
-                            ";
-                                foreach ($tracks as $track){
-                                    echo "
+                                <?php
+                                foreach ($tracks as $track){ ?>
                                     <div class='track'>
                                         <section class='track-id-section'>
-                                            {$i}
+                                            <?php echo $i; ?>
                                         </section>                             
                                         <section class='track-title-section'>
-                                            {$track['nom']}
+                                            <?php echo $track['nom']; ?>
                                         </section>
                                         <section class='track-duration-section'>
-                                            {$track['duree']}                                        
+                                            <?php echo $track['duree']; ?>
                                         </section>     
-                                    </div>                                    
-                                    ";
-                                    $i++;
-                                }
-                                echo "
+                                    </div>
+                                    <?php $i++;
+                                } ?>
                             </section>
                         </section>
                     </div>
-                  </div>";
-        }
+                  </div>
+        <?php }
     }
 ?>
 <header class="mainHeader">
