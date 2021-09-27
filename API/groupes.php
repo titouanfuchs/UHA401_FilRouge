@@ -10,7 +10,12 @@ switch($request_method){
         if (!empty($_GET["groupe"])){
             getGroup($_GET["groupe"]);
         }else{
-            getGroup();
+            if (!empty($_GET["page"])){
+                getGroup(0, $_GET["page"]);
+            }else{
+                getGroup();
+            }
+
         }
         break;
     case 'POST':
@@ -28,13 +33,18 @@ switch($request_method){
         break;
 }
 
-function getGroup($id = "0"){
+function getGroup($id = "0", $page = "-1"){
     global $bdd;
     $query = "SELECT * FROM groupes";
     $reponse = array();
 
     if ($id != "0"){
         $query .= " WHERE id='{$id}' LIMIT 1";
+    }
+
+    if ($page != "-1"){
+        $pageCalc = 1 + (5 * ($page - 1));
+        $query .= " WHERE id>={$pageCalc} LIMIT 5";
     }
 
     $result = $bdd->query($query);

@@ -252,12 +252,7 @@
     </section>
 
     <section class="contentHeader" id="groupHeader">
-        <?php
-        for ($i = 0; $i < $groupPageCount; $i++){
-            $page = $i + 1;
-            echo "<a href='./?search={$_SESSION['searchArg']}&albumPage={$_SESSION['AlbumPage']}&groupPage={$i}'><button>{$page}</button></a>";
-        }
-        ?>
+
     </section>
 
     <section id="groupContent" class="groupContent">

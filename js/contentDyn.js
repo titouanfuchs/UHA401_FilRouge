@@ -1,10 +1,11 @@
 const groupContent = document.getElementById("groupContent");
+let groupPage = 1;
 
 document.onload = initPage();
 
+
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
     getGroupSearch();
-
 }
 
 function readAPI(api){
@@ -21,26 +22,29 @@ function readAPI(api){
         .catch(function (err){
             console.log(err);
         });
+
     return data;
 }
 
 function getGroupSearch(arg){
     groupContent.innerHTML = "";
+    let groupCards = [];
 
     if (arg == null){ //Quand pas de recherche effectuée;
-        const groupes = readAPI("groupes");
+        readAPI("groupes?page=" + groupPage.toString()).then(function(groupes){
+            let groupArray = Object.values(groupes);
 
-        for (var groupe in groupes){
-            
-        }
-
-        addGroupCard()
+            for (let gr in groupes){
+                let groupe = groupArray[gr];
+                createGroupCard(groupe['nom'], groupe['chanteur'], groupe['origin'], groupe['genres']);
+            }
+        });
     }else{ //Quand une recherche est effectuée;
-        addGroupCard();
+        createGroupCard();
     }
 }
 
-function addGroupCard(nom, chanteur, origine, genres){
+function createGroupCard(nom, chanteur, origine, genres){
     //Creation de la nouvelle Carte
     const newCard = document.createElement("div");
     newCard.classList.add("groupCard");
@@ -78,7 +82,7 @@ function addGroupCard(nom, chanteur, origine, genres){
 
     for(let genre in genres){
         let genreCase = document.createElement("button");
-        genreCase.innerText += genre;
+        genreCase.innerText += genres[genre]['nom'];
 
         GenreSection.appendChild(genreCase);
     }
