@@ -2,9 +2,17 @@ const groupContent = document.getElementById("groupContent");
 
 document.onload = initPage();
 
-
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
-    getGroupSearch(null,1);
+    readAPI("groupes?count").then(function (count){
+        createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePageNoSearch");
+    });
+    if (sessionStorage.getItem('groupPage') === null){
+        sessionStorage.setItem('groupPage', '1');
+        getGroupSearch(null,1);
+    }else{
+        console.log(sessionStorage.getItem("groupPage"));
+        getGroupSearch(null,sessionStorage.getItem("groupPage"));
+    }
 }
 
 function readAPI(api){
@@ -26,19 +34,17 @@ function readAPI(api){
 }
 
 function getGroupSearch(arg, page){
-    groupContent.innerHTML = "";
+    groupLoading();
 
     if (arg == null){ //Quand pas de recherche effectuée;
         readAPI("groupes?page=" + page.toString()).then(function(groupes){
-            readAPI("groupes?count").then(function (count){
-                createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePageNoSearch");
-            });
-
             let groupArray = Object.values(groupes);
-
+            groupContent.style.justifyContent = "left";
+            groupContent.innerHTML = "";
             for (let gr in groupes){
                 let groupe = groupArray[gr];
-                createGroupCard(groupe['nom'], groupe['chanteur'], groupe['origin'], groupe['genres']);
+
+                createGroupCard(groupe['nom'], groupe['chanteur'], groupe['origin'], groupe['genres'], gr);
             }
         });
     }else{ //Quand une recherche est effectuée;
@@ -46,7 +52,19 @@ function getGroupSearch(arg, page){
     }
 }
 
+function groupLoading(){
+    groupContent.innerHTML = "";
+    const newCard = document.createElement("div");
+    newCard.classList.add("loadingCard");
+
+    newCard.innerHTML = '<object type="text/html" data="./animations/3dloading.html" height="100%""></object>';
+
+    groupContent.style.justifyContent = "center";
+    groupContent.appendChild(newCard);
+}
+
 function groupChangePageNoSearch(page){
+    sessionStorage.setItem("groupPage", page.toString());
     getGroupSearch(null, page);
 }
 
@@ -61,7 +79,7 @@ function createPaginationButtons(count, parent, fct){
     }
 }
 
-function createGroupCard(nom, chanteur, origine, genres){
+function createGroupCard(nom, chanteur, origine, genres, id){
     //Creation de la nouvelle Carte
     const newCard = document.createElement("div");
     newCard.classList.add("groupCard");
@@ -108,5 +126,10 @@ function createGroupCard(nom, chanteur, origine, genres){
     newCard.appendChild(InfoSection);
     newCard.appendChild(GenreSection);
 
-    groupContent.appendChild(newCard);
+    sleep(100 * id).then(() => {groupContent.appendChild(newCard);});
+
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
