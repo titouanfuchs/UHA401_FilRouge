@@ -90,6 +90,7 @@ footer{
     padding: 5px;
     justify-content: left;
     margin-bottom: 5px;
+    min-height: 308px;
 }
 
 .contentHeader{
@@ -253,19 +254,6 @@ footer{
     border-radius: 10px;
     box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
     background-image: linear-gradient(white, whitesmoke);
-
-    /*animation d'entrée*/
-    -webkit-transform: rotateY(0deg);
-    -moz-transform: rotateY(0deg);
-    -webkit-transform-style: preserve-3d;
-    -moz-transform-style: preserve-3d;
-    -webkit-backface-visibility: hidden;
-    -moz-backface-visibility: hidden;
-    -webkit-transition: all 0.4s ease-in-out;
-    -moz-transition: all 0.4s ease-in-out;
-    -ms-transition: all 0.4s ease-in-out;
-    -o-transition: all 0.4s ease-in-out;
-    transition: all 0.4s ease-in-out;
 }
 
 .albumCard:hover{
@@ -642,11 +630,6 @@ footer{
     min-width: 30em;
     width: 30em;
     height: 15em;
-
-    /*border: black 1px solid;*/
-    border-radius: 10px;
-    box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
-    background-image: linear-gradient(white, whitesmoke);
 }
 
 .loadingAnimation{
