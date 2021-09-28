@@ -7,7 +7,9 @@ $headers = apache_request_headers();
 
 switch($request_method){
     case 'GET':
-        if (!empty($_GET["groupe"])){
+        if (isset($_GET['count'])){
+            countGroups();
+        }else if (!empty($_GET["groupe"])){
             getGroup($_GET["groupe"]);
         }else{
             if (!empty($_GET["page"])){
@@ -15,7 +17,6 @@ switch($request_method){
             }else{
                 getGroup();
             }
-
         }
         break;
     case 'POST':
@@ -33,6 +34,15 @@ switch($request_method){
         break;
 }
 
+function countGroups(){
+    global $bdd;
+    $result = $bdd->query("SELECT COUNT(*) FROM groupes");
+    $reponse = $result->fetchAll(PDO::FETCH_COLUMN);
+
+    header('Content-Type: application/json');
+    echo json_encode($reponse[0], JSON_PRETTY_PRINT);
+}
+
 function getGroup($id = "0", $page = "-1"){
     global $bdd;
     $query = "SELECT * FROM groupes";
@@ -43,8 +53,11 @@ function getGroup($id = "0", $page = "-1"){
     }
 
     if ($page != "-1"){
-        $pageCalc = 1 + (5 * ($page - 1));
-        $query .= " WHERE id>={$pageCalc} LIMIT 5";
+        $pageCalc = 5 * ($page - 1);
+        $query .= " LIMIT 5";
+        if ($pageCalc > 0){
+            $query .= ",{$pageCalc}";
+        }
     }
 
     $result = $bdd->query($query);

@@ -1,11 +1,10 @@
 const groupContent = document.getElementById("groupContent");
-let groupPage = 1;
 
 document.onload = initPage();
 
 
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
-    getGroupSearch();
+    getGroupSearch(null,1);
 }
 
 function readAPI(api){
@@ -16,7 +15,7 @@ function readAPI(api){
             }
         })
         .then(function(value){
-            console.log("Lecture API " + api + " OK");
+            //console.log("Lecture API " + api + " OK");
             return value;
         })
         .catch(function (err){
@@ -26,12 +25,15 @@ function readAPI(api){
     return data;
 }
 
-function getGroupSearch(arg){
+function getGroupSearch(arg, page){
     groupContent.innerHTML = "";
-    let groupCards = [];
 
     if (arg == null){ //Quand pas de recherche effectuée;
-        readAPI("groupes?page=" + groupPage.toString()).then(function(groupes){
+        readAPI("groupes?page=" + page.toString()).then(function(groupes){
+            readAPI("groupes?count").then(function (count){
+                createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePageNoSearch");
+            });
+
             let groupArray = Object.values(groupes);
 
             for (let gr in groupes){
@@ -41,6 +43,21 @@ function getGroupSearch(arg){
         });
     }else{ //Quand une recherche est effectuée;
         createGroupCard();
+    }
+}
+
+function groupChangePageNoSearch(page){
+    getGroupSearch(null, page);
+}
+
+function createPaginationButtons(count, parent, fct){
+    document.getElementById(parent).innerHTML = "";
+    for (let i = 0; i < count; i++){
+        let button = document.createElement("Button");
+        button.setAttribute("onClick", fct + "(" + (i+1) + ");");
+        button.innerText = i + 1;
+
+        document.getElementById(parent).appendChild(button);
     }
 }
 

@@ -251,7 +251,7 @@
         <h1>Groupes</h1>
     </section>
 
-    <section class="contentHeader" id="groupHeader">
+    <section class="contentHeader" id="groupPaginationButtons">
 
     </section>
 
