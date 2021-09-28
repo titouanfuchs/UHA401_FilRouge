@@ -36,20 +36,22 @@ function readAPI(api){
 function getGroupSearch(arg, page){
     groupLoading();
 
-    if (arg == null){ //Quand pas de recherche effectuée;
-        readAPI("groupes?page=" + page.toString()).then(function(groupes){
-            let groupArray = Object.values(groupes);
-            groupContent.style.justifyContent = "left";
-            groupContent.innerHTML = "";
-            for (let gr in groupes){
-                let groupe = groupArray[gr];
+    sleep(750).then(() => {
+        if (arg == null){ //Quand pas de recherche effectuée;
+            readAPI("groupes?page=" + page.toString()).then(function(groupes){
+                let groupArray = Object.values(groupes);
+                groupContent.style.justifyContent = "left";
+                groupContent.innerHTML = "";
+                for (let gr in groupes){
+                    let groupe = groupArray[gr];
 
-                createGroupCard(groupe['nom'], groupe['chanteur'], groupe['origin'], groupe['genres'], gr);
-            }
-        });
-    }else{ //Quand une recherche est effectuée;
-        createGroupCard();
-    }
+                    createGroupCard(groupe['nom'], groupe['chanteur'], groupe['origin'], groupe['genres'], gr);
+                }
+            });
+        }else{ //Quand une recherche est effectuée;
+            createGroupCard();
+        }
+    })
 }
 
 function groupLoading(){
