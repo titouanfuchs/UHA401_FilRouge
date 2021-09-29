@@ -70,11 +70,12 @@ function getAlbumDetails($id = "0"){
         $query .= " WHERE album='{$id}' LIMIT 1";
     }
 
-    $result = mysqli_query($sqli_bdd,$query);
+    $result = $bdd->query($query);
     $hadDetails = false;
+    $details = $result->fetchAll(PDO::FETCH_ASSOC);
 
-    while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
-        $reponse[] = $row;
+    foreach($details as $detail){
+        $reponse[] = $detail;
         $hadDetails = true;
     }
 
@@ -102,10 +103,11 @@ function getAlbumDetails($id = "0"){
             )) or die(print_r($req->errorInfo()));
         }
 
-        $result = mysqli_query($sqli_bdd,$query);
+        $result = $bdd->query($query);
+        $details = $result->fetchAll(PDO::FETCH_ASSOC);
 
-        while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
-            $reponse[] = $row;
+        foreach ($details as $detail){
+            $reponse[] = $detail;
         }
     }
 
