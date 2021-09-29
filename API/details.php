@@ -1,7 +1,7 @@
 <?php
-
-include ("../connexion_base.php");
 require("../lastfmTrackReader.php");
+require("../connexion_base.php");
+
 $request_method = $_SERVER["REQUEST_METHOD"];
 
 $headers = apache_request_headers();
@@ -79,14 +79,14 @@ function getAlbumDetails($id = "0"){
     }
 
     if (!$hadDetails && $id != "0"){
-        $albumRequest = json_decode(file_get_contents("./albums.php?album=" . $id));
+        $albumRequest = returnAlbum($id);
 
-        $group = $albumRequest['artiste'];
-        $album = $albumRequest['nom'];
+        $group = $albumRequest[0]['artiste'];
+        $album = $albumRequest[0];
 
-
-        $data = readData($group['nom'], $album['nom']);
+        $data = readData($group, $album['nom']);
         $newDetail = array();
+        $tracks = array();
 
         if (count($data) > 0){
             foreach ($data as $track){
@@ -97,7 +97,7 @@ function getAlbumDetails($id = "0"){
             $req = $bdd->prepare('INSERT INTO details(album, lastfm, tracks) VALUES(:album, :lastfm, :tracks)');
             $req->execute(array(
                 'album' => $album['id'],
-                'lastfm' => returnURL($group['nom'], $album['nom']),
+                'lastfm' => returnURL($group, $album['nom']),
                 'tracks' => json_encode($tracks)
             )) or die(print_r($req->errorInfo()));
         }
@@ -184,4 +184,35 @@ function removeAlbumDetails($id){
 
     header('Content-Type: application/json');
     echo json_encode($reponse, JSON_PRETTY_PRINT);
+}
+
+function returnAlbum($id = "0", $page = "-1"){
+    global $bdd;
+    $query = "SELECT * FROM albums";
+    $reponse = array();
+
+    if ($id != "0"){
+        $query .= " WHERE id='{$id}' LIMIT 1";
+    }
+
+    if ($page != "-1"){
+        $pageCalc = 5 * ($page - 1);
+        $query .= " LIMIT 5";
+        if ($pageCalc > 0){
+            $query .= ",{$pageCalc}";
+        }
+    }
+
+    $result = $bdd->query($query);
+    $albums = $result->fetchAll(PDO::FETCH_ASSOC);
+
+    foreach ($albums as $album){
+        $groupeResult = $bdd->query("SELECT nom FROM groupes WHERE id={$album['artiste']}");
+        $artiste = $groupeResult->fetchAll();
+
+        $album['artiste'] = $artiste[0]['nom'];
+        $reponse[] = $album;
+    }
+
+    return $reponse;
 }
