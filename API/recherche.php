@@ -8,7 +8,7 @@ $headers = apache_request_headers();
 switch ($request_method) {
     case 'GET':
         if (isset($_GET["search"])) {
-            getResearch($_GET["search"], 1);
+            getResearch($_GET["search"]);
         }
         break;
     default:
@@ -59,38 +59,30 @@ function getGroupSearch($arg){
     return $reponse;
 }
 
-function getResearch($arg, $page)
+function getResearch($arg)
 {
     global $bdd;
 
-    $reponse = array("albums" => array(), "groupes" => array());
+    $result = array("albums" => array(), "groupes" => array());
 
     $groupes = getGroupSearch($arg);
 
     foreach ($groupes as $groupe){
-        $reponse['groupes'][] = $groupe;
+        $result['groupes'][] = $groupe;
     }
 
     $albumResearch = getAlbumSearch($arg);
 
     foreach ($albumResearch['groupes'] as $groupe){
-        if (!in_array($groupe, $reponse['groupes'])){
-            $reponse['groupes'][] = $groupe;
+        if (!in_array($groupe, $result['groupes'])){
+            $result['groupes'][] = $groupe;
         }
     }
 
     foreach ($albumResearch['albums'] as $album){
-        $reponse['albums'][] = $album;
+        $result['albums'][] = $album;
     }
 
-    /*if ($page != "-1") {
-        $pageCalc = 5 * ($page - 1);
-        $query .= " LIMIT 5";
-        if ($pageCalc > 0) {
-            $query .= ",{$pageCalc}";
-        }
-    }*/
-
     header('Content-Type: application/json');
-    echo json_encode($reponse, JSON_PRETTY_PRINT);
+    echo json_encode($result, JSON_PRETTY_PRINT);
 }

@@ -234,6 +234,10 @@ footer{
     border-radius: 10px;
     box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
     background-image: linear-gradient(white, whitesmoke);
+
+    animation-name: flip;
+    animation-duration: 1s;
+    backface-visibility: hidden;
 }
 
 /*---AlbumCard--*/

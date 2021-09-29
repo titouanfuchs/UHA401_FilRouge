@@ -10,6 +10,9 @@ RewriteRule ^[^/]+/(\d+)$ ./API/albums.php?id=$1
 RewriteRule ^API/groupes/?$ ./API/groupes.php [NC,L]
 RewriteRule ^[^/]+/(\d+)$ ./API/groupes.php?id=$1
 
+RewriteRule ^API/recherche/?$ ./API/recherche.php [NC,L]
+RewriteRule ^[^/]+/(\d+)$ ./API/recherche.php?id=$1
+
 #bdd
 RewriteRule ^dbBuild/?$ ./dbBuild.php [NC,L]
 RewriteRule ^[^/]+/(\d+)$ ./dbBuild.php?action=$1

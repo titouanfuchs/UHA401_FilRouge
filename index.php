@@ -39,14 +39,10 @@
     </section>
 
     <section class="researchSection">
-        <form method="GET" name="MusicSearch">
-            <fieldset class="transparentFieldSet">
-                <input type="text" name="search" class="researchInput" placeholder="Recherche (Artiste, Album)" value="<?php if (isset($_SESSION['searchArg'])) { echo $_SESSION['searchArg'];}?>"/>
-                <input type="submit" value="Rechercher" class="researchSubmit"/>
-            </fieldset>
-            <fieldset class="transparentFieldSet">
-            </fieldset>
-        </form>
+        <section class="transparentFieldSet">
+            <input type="text" name="search" class="researchInput" placeholder="Recherche..." id="researchValue" onchange="search()"/>
+            <button class="researchSubmit" id="researchSubmit" onclick="search()">Rechercher</button>
+        </section>
     </section>
 
     <section class="userSection">

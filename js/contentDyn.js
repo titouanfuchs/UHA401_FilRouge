@@ -54,11 +54,47 @@ function readAPI(api){
     return data;
 }
 
-function getAlbumSearch(arg, page){
+function search(){
+   let arg = document.getElementById("researchValue").value;
+
+   if (arg.length > 0){
+       readAPI("recherche?search=" + arg).then(function (result){
+           const groupes = result['groupes'];
+           const albums = result['albums'];
+
+           if (groupes.length > 0){
+               getGroupSearch(groupes);
+           }else{
+               LoadingCard(groupContent);
+
+               sleep(400).then(() =>{
+                   groupContent.innerHTML = "";
+                   createNoResultCard(groupContent);
+               })
+           }
+
+           if (albums.length > 0){
+               getAlbumSearch(albums);
+           }else{
+               LoadingCard(albumContent);
+
+               sleep(400).then(() =>{
+                   albumContent.innerHTML = "";
+                   createNoResultCard(albumContent);
+               })
+           }
+       })
+   }else{
+       groupChangePage(1);
+       albumChangePage(1);
+   }
+}
+
+function getAlbumSearch(albumData, page){
     LoadingCard(albumContent);
 
     sleep(400).then(() => {
-        if (arg == null){ //Quand pas de recherche effectuée;
+        if (albumData == null){ //Quand pas de recherche effectuée;
             readAPI("albums?page=" + page.toString()).then(function(albums){
                 let albumArray = Object.values(albums);
                 albumContent.innerHTML = "";
@@ -69,16 +105,22 @@ function getAlbumSearch(arg, page){
                 }
             });
         }else{ //Quand une recherche est effectuée;
-            createAlbumCard();
+            let albumArray = Object.values(albumData);
+            albumContent.innerHTML = "";
+            for (let al in albumData){
+                let album = albumArray[al];
+
+                createAlbumCard(album['id'], album['nom'], album['artiste'], album['sortie'], album['pistes'], album['couverture'], al);
+            }
         }
     })
 }
 
-function getGroupSearch(arg, page){
+function getGroupSearch(groupes, page){
     LoadingCard(groupContent);
 
     sleep(400).then(() => {
-        if (arg == null){ //Quand pas de recherche effectuée;
+        if (groupes == null){ //Quand pas de recherche effectuée;
             readAPI("groupes?page=" + page.toString()).then(function(groupes){
                 let groupArray = Object.values(groupes);
                 groupContent.style.justifyContent = "left";
@@ -90,7 +132,14 @@ function getGroupSearch(arg, page){
                 }
             });
         }else{ //Quand une recherche est effectuée;
-            createGroupCard();
+            let groupArray = Object.values(groupes);
+            groupContent.style.justifyContent = "left";
+            groupContent.innerHTML = "";
+            for (let gr in groupes){
+                let groupe = groupArray[gr];
+
+                createGroupCard(groupe['nom'], groupe['chanteur'], groupe['origin'], groupe['genres'], gr);
+            }
         }
     })
 }
@@ -106,12 +155,12 @@ function LoadingCard(container){
     container.appendChild(newCard);
 }
 
-function groupChangePage(arg, page){
+function groupChangePage(page){
     sessionStorage.setItem("groupPage", page.toString());
     getGroupSearch(null, page);
 }
 
-function albumChangePage(arg, page){
+function albumChangePage(page){
     sessionStorage.setItem("albumPage", page.toString());
     getAlbumSearch(null, page);
 }
@@ -148,6 +197,20 @@ function createPaginationButtons(count, parent, fct){
 
         document.getElementById(parent).appendChild(button);
     }
+}
+
+function createNoResultCard(parent){
+    const newCard = document.createElement("div");
+    newCard.classList.add("Card");
+
+    const section = document.createElement("section");
+    section.classList.add("noResult")
+
+    section.innerHTML = "<h1>Aucun résultat</h1>";
+
+    newCard.appendChild(section);
+
+    parent.appendChild(newCard);
 }
 
 function createPisteCard(id, nom, duree){
