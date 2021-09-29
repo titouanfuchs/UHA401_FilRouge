@@ -7,7 +7,9 @@ $headers = apache_request_headers();
 
 switch($request_method){
     case 'GET':
-        if (isset($_GET['count'])){
+        if (!empty($_GET['search'])){
+            getGroupSearch($_GET['search']);
+        }elseif (isset($_GET['count'])){
             countGroups();
         }else if (!empty($_GET["groupe"])){
             getGroup($_GET["groupe"]);
