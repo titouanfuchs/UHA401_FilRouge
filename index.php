@@ -142,89 +142,33 @@
     <link rel="stylesheet" href="style/style.css"/>
 </head>
 
-<body>
+<body id="body">
 <div class="topAnchor" id="top"></div>
 
-<?php
-    //Affichage des infos détaillées d'un album
-    if($showInfo){
-        $albumRep = $bdd->query("SELECT * FROM albums WHERE id='{$showID}' ");
-        $aDataTableDetailHTML = null;
-        $aDataTableHeaderHTML = null;
+<div class='infoBackground' id="albumInfo">
+    <div class='bigInfo''>
+    <section class='infoHeader'>
+        <button onclick="hideAlbumDetails()">X</button>
+    </section>
+    <section class='infoPochetteContainer'>
+        <section class='infoPochette'>
+            <img id="infoPochette"/>
+        </section>
+        <section class='infoTitre'>
+            <h1 id="infoTitre"></h1>
+        </section>
+    </section>
+    <section class='infoContainer'>
+        <section class='infoLinks'>
 
-        $i = 1;
+        </section>
+        <section id="pistesDetails" class='infoPistes'>
 
-        while ($album = $albumRep->fetch()){
-            $group = returnGroup($groupsToShow, $album['artiste']);
-            $tracks = array();
+        </section>
+    </section>
+</div>
+</div>
 
-            $reponse = $bdd->query("SELECT * FROM details WHERE album={$album['id']}");
-            $hadDetails = false;
-            while($donnees = $reponse->fetch()) {
-                $hadDetails = true;
-                $tracks = json_decode($donnees['tracks'], true);
-            }
-
-            if (!$hadDetails){
-                $data = readData($group['nom'], $album['nom']);
-                $newDetail = array();
-
-                if (count($data) > 0){
-                    foreach ($data as $track){
-                        $newTrack = array('id'=>$track[0], 'nom'=>$track[3], 'duree'=>$track[7]);
-                        array_push($tracks, $newTrack);
-                    }
-
-                    $req = $bdd->prepare('INSERT INTO details(album, lastfm, tracks) VALUES(:album, :lastfm, :tracks)');
-                    $req->execute(array(
-                        'album' => $album['id'],
-                        'lastfm' => returnURL($group['nom'], $album['nom']),
-                        'tracks' => json_encode($tracks)
-                    )) or die(print_r($req->errorInfo()));
-                }
-            }
-
-            ?>
-                <div class='infoBackground'>
-                    <div class='bigInfo''>
-                        <section class='infoHeader'>
-                            <?php echo"<a href='./?search={$_SESSION['searchArg']}&albumPage={$_SESSION['AlbumPage']}'><button>X</button></a>"; ?>
-                        </section>
-                        <section class='infoPochetteContainer'>
-                            <section class='infoPochette'>
-                                <?php echo"<img src='{$album['couverture']}'/>"; ?>
-                            </section>
-                            <section class='infoTitre'>
-                                <h1> <?php echo $album['nom']; ?></h1>
-                            </section>
-                        </section>
-                        <section class='infoContainer'>
-                            <section class='infoLinks'>
-                        
-                            </section>
-                            <section class='infoPistes'>
-                                <?php
-                                foreach ($tracks as $track){ ?>
-                                    <div class='track'>
-                                        <section class='track-id-section'>
-                                            <?php echo $i; ?>
-                                        </section>                             
-                                        <section class='track-title-section'>
-                                            <?php echo $track['nom']; ?>
-                                        </section>
-                                        <section class='track-duration-section'>
-                                            <?php echo $track['duree']; ?>
-                                        </section>     
-                                    </div>
-                                    <?php $i++;
-                                } ?>
-                            </section>
-                        </section>
-                    </div>
-                  </div>
-        <?php }
-    }
-?>
 <header class="mainHeader">
     <section class="logoSection">
         <img src="images/Logo.png">
@@ -259,75 +203,20 @@
 
     </section>
 
-    <section class="contentHeader">
+    <section class="contentHeader" id="albumHeader">
         <h1>Albums</h1>
     </section>
 
-    <section class="contentHeader">
-        <?php
-            for ($i = 0; $i < $albumPageCount; $i++){
-                $page = $i + 1;
-                echo "<a href='./?search={$_SESSION['searchArg']}&albumPage={$i}&groupPage={$_SESSION['GroupPage']}'><button>{$page}</button></a>";
-            }
-        ?>
+    <section class="contentHeader" id="albumPaginationButtons">
+
     </section>
 
     <section id="albumContent" class="albumContent">
-        <?php
-        $useRandom = false;
-        if ($correspondingSearch == false && $_SESSION['searchArg'] == null){
-            //shuffle($albumsToShow);
-            $useRandom = true;
-        }
 
-        if ($correspondingSearch || $useRandom) {
-            foreach ($albumsToShow as $album) {
-                $album_pochette_url = $album['couverture'];
-                $album_name = $album['nom'];
-                $album_sortie = $album['sortie'];
-                $album_pistes = $album['pistes'];
-                $album_group_index = $album['artiste'];
-                $album_group = returnGroup($groupsToShow, $album_group_index);
-                $album_group_name = $album_group['nom'];
-
-                echo "<div class='albumCard'>
-                                    <section class='albumCard-pochette-Section'>
-                                        <img class='albumCard-pochette' src='$album_pochette_url'/>
-                                    </section>
-                        
-                                    <section class='albumCard-Info-Section'>
-                                        <section>
-                                            <h2>$album_name</h2>
-                                        </section>
-                                        <section>
-                                            <h3>Groupe : $album_group_name</h3>
-                                        </section>
-                                        <section>
-                                            <h4>Sortie :$album_sortie</h4>
-                                        </section>
-                                        <section>
-                                            <h4>Piste(s):$album_pistes</h4>
-                                        </section>
-                                    </section>
-                        
-                                    <section class='albumCard-Action-Section'>
-                                        <a href='./?info={$album['id']}&search={$_SESSION['searchArg']}&albumPage={$_SESSION['AlbumPage']}'><button>Plus d'infos</button></a>
-                                    </section>
-                                </div>";
-            }
-        }else{
-            echo "<div class='Card'>
-                              <div class='noResult'>
-                                <h1>Aucun résultat</h1>
-                              </div>
-                          </div>";
-        }
-
-        ?>
     </section>
 </section>
 <footer>
-    <img title="je ne suis présent que pour combler un trou béant" style="width: 15%; position: relative;left: 50%;" src="https://www.avantjetaisriche.com/wp-content/uploads/2015/06/monsieur-mr-patate-homer-simpson.jpg"/>
+    <img id="eheh" onclick="flipEheh()" title="je ne suis présent que pour combler un trou béant" style="width: 15%; position: relative;left: 50%;" src="https://www.avantjetaisriche.com/wp-content/uploads/2015/06/monsieur-mr-patate-homer-simpson.jpg"/>
 </footer>
 
 <script type="text/javascript" src="js/contentDyn.js"></script>

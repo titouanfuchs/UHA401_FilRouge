@@ -1,17 +1,39 @@
 const groupContent = document.getElementById("groupContent");
+const albumContent = document.getElementById("albumContent");
+
+const albumInfo = document.getElementById("albumInfo");
+const pochetteInfo = document.getElementById("infoPochette");
+const titreInfo = document.getElementById("infoTitre");
+const pisteInfo = document.getElementById("pistesDetails");
 
 document.onload = initPage();
 
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
-    readAPI("groupes?count").then(function (count){
-        createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePageNoSearch");
-    });
-    if (sessionStorage.getItem('groupPage') === null){
-        sessionStorage.setItem('groupPage', '1');
-        getGroupSearch(null,1);
-    }else{
-        console.log(sessionStorage.getItem("groupPage"));
-        getGroupSearch(null,sessionStorage.getItem("groupPage"));
+    if (sessionStorage.getItem('searchArg') === null){
+        //Groupes
+        readAPI("groupes?count").then(function (count){
+            createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePage");
+        });
+
+        if (sessionStorage.getItem('groupPage') === null){
+            sessionStorage.setItem('groupPage', '1');
+            getGroupSearch(null,1);
+        }else{
+            console.log(sessionStorage.getItem("groupPage"));
+            getGroupSearch(null,sessionStorage.getItem("groupPage"));
+        }
+
+        readAPI("albums?count").then(function (count){
+            createPaginationButtons(Math.ceil(count/5), "albumPaginationButtons", "albumChangePage");
+        });
+
+        if (sessionStorage.getItem('albumPage') === null){
+            sessionStorage.setItem('albumPage', '1');
+            getAlbumSearch(null,1);
+        }else{
+            //console.log(sessionStorage.getItem("albumPage"));
+            getAlbumSearch(null,sessionStorage.getItem("albumPage"));
+        }
     }
 }
 
@@ -29,14 +51,33 @@ function readAPI(api){
         .catch(function (err){
             console.log(err);
         });
-
     return data;
 }
 
-function getGroupSearch(arg, page){
-    groupLoading();
+function getAlbumSearch(arg, page){
+    LoadingCard(albumContent);
 
-    sleep(750).then(() => {
+    sleep(400).then(() => {
+        if (arg == null){ //Quand pas de recherche effectuée;
+            readAPI("albums?page=" + page.toString()).then(function(albums){
+                let albumArray = Object.values(albums);
+                albumContent.innerHTML = "";
+                for (let al in albums){
+                    let album = albumArray[al];
+
+                    createAlbumCard(album['id'], album['nom'], album['artiste'], album['sortie'], album['pistes'], album['couverture'], al);
+                }
+            });
+        }else{ //Quand une recherche est effectuée;
+            createAlbumCard();
+        }
+    })
+}
+
+function getGroupSearch(arg, page){
+    LoadingCard(groupContent);
+
+    sleep(400).then(() => {
         if (arg == null){ //Quand pas de recherche effectuée;
             readAPI("groupes?page=" + page.toString()).then(function(groupes){
                 let groupArray = Object.values(groupes);
@@ -54,31 +95,121 @@ function getGroupSearch(arg, page){
     })
 }
 
-function groupLoading(){
-    groupContent.innerHTML = "";
+function LoadingCard(container){
+    container.innerHTML = "";
     const newCard = document.createElement("div");
     newCard.classList.add("loadingCard");
 
-    newCard.innerHTML = '<object type="text/html" data="./animations/3dloading.html" height="100%""></object>';
+    newCard.innerHTML = '<object type="text/html" data="./animations/3dloading.html" height="100%" alt="Chargement..." title="Chargement..."></object>';
 
-    groupContent.style.justifyContent = "center";
-    groupContent.appendChild(newCard);
+    container.style.justifyContent = "center";
+    container.appendChild(newCard);
 }
 
-function groupChangePageNoSearch(page){
+function groupChangePage(arg, page){
     sessionStorage.setItem("groupPage", page.toString());
     getGroupSearch(null, page);
+}
+
+function albumChangePage(arg, page){
+    sessionStorage.setItem("albumPage", page.toString());
+    getAlbumSearch(null, page);
+}
+
+function showAlbumDetails(id){
+    pisteInfo.innerHTML = "";
+
+    readAPI("albums?album=" + id).then(function (albums){
+        let album = albums[0];
+        pochetteInfo.setAttribute("src", album['couverture']);
+        titreInfo.innerText = album['nom'];
+        albumInfo.style.display = "block";
+
+        readAPI("details?album="+id).then(function(details){
+            let pistes = JSON.parse(details[0]['tracks']);
+
+            for (let piste in pistes){
+                createPisteCard(parseInt(pistes[piste]['id']), pistes[piste]['nom'], pistes[piste]['duree'])
+            }
+        })
+    });
+}
+
+function hideAlbumDetails(){
+    albumInfo.style.display = "none";
 }
 
 function createPaginationButtons(count, parent, fct){
     document.getElementById(parent).innerHTML = "";
     for (let i = 0; i < count; i++){
         let button = document.createElement("Button");
-        button.setAttribute("onClick", fct + "(" + (i+1) + ");");
+        button.setAttribute("onClick", fct + "(null," + (i+1) + ");");
         button.innerText = i + 1;
 
         document.getElementById(parent).appendChild(button);
     }
+}
+
+function createPisteCard(id, nom, duree){
+    const newCard = document.createElement("div");
+    newCard.classList.add("track");
+
+    const idSection = document.createElement("section");
+    idSection.classList.add("track-id-section");
+    idSection.innerText = id;
+
+    const nomSection = document.createElement("section");
+    nomSection.classList.add("track-title-section");
+    nomSection.innerText = nom;
+
+    const dureeSection = document.createElement("section");
+    dureeSection.classList.add("track-duration-section");
+    dureeSection.innerText = duree;
+
+    newCard.appendChild(idSection);
+    newCard.appendChild(nomSection);
+    newCard.appendChild(dureeSection);
+
+    pisteInfo.appendChild(newCard);
+}
+
+function createAlbumCard(albumId, nom, groupe, sortie, pistes, pochette, id){
+    const newCard = document.createElement("div");
+    newCard.classList.add("albumCard");
+
+    const pochetteSection = document.createElement("section");
+    pochetteSection.classList.add("albumCard-pochette-Section");
+    pochetteSection.innerHTML = "<img class='albumCard-pochette' src='" + pochette + "'/>"
+
+    const infoSection = document.createElement("section");
+    infoSection.classList.add("albumCard-Info-Section");
+
+    const album_nom = document.createElement("h2");
+    album_nom.innerText = nom;
+
+    const album_Groupe = document.createElement("h3");
+    album_Groupe.innerText = groupe;
+
+    const album_Sortie = document.createElement("h3");
+    album_Sortie.innerText = sortie;
+
+    infoSection.appendChild(album_nom);
+    infoSection.appendChild(album_Groupe);
+    infoSection.appendChild(album_Sortie);
+
+    const actionSection = document.createElement("section");
+    actionSection.classList.add("albumCard-Action-Section");
+
+    const detailAction = document.createElement("button");
+    detailAction.setAttribute("onClick", "showAlbumDetails(" + albumId + ");");
+    detailAction.innerText = "Voir plus de détails";
+    actionSection.appendChild(detailAction);
+
+    newCard.appendChild(pochetteSection);
+    newCard.appendChild(infoSection);
+    newCard.appendChild(actionSection);
+
+    sleep(100 * id).then(() => {albumContent.appendChild(newCard);});
 }
 
 function createGroupCard(nom, chanteur, origine, genres, id){
@@ -129,6 +260,13 @@ function createGroupCard(nom, chanteur, origine, genres, id){
     newCard.appendChild(GenreSection);
 
     sleep(100 * id).then(() => {groupContent.appendChild(newCard);});
+
+}
+
+function flipEheh(){
+    alert("Z'est partiiiii");
+    sleep(2000).then(() => {document.getElementById("body").classList.add("flipPage");});
+    //sleep(2000).then(() => {document.getElementById("body").classList.remove("flipPage")});
 
 }
 

@@ -1,6 +1,7 @@
 <?php
 
 include ("../connexion_base.php");
+require("../lastfmTrackReader.php");
 $request_method = $_SERVER["REQUEST_METHOD"];
 
 $headers = apache_request_headers();
@@ -8,14 +9,14 @@ $headers = apache_request_headers();
 switch($request_method){
     case 'GET':
         if (!empty($_GET["album"])){
-            getGroup($_GET["album"]);
+            getAlbumDetails($_GET["album"]);
         }else{
-            getGroup();
+            getAlbumDetails();
         }
         break;
     case 'POST':
         if ($headers['Authorization'] == $_SESSION['APIPASS']) {
-            postAlbum();
+            getAlbumDetails();
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
@@ -33,7 +34,7 @@ switch($request_method){
         break;
     case 'DELETE':
         if ($headers['Authorization'] == $_SESSION['APIPASS']) {
-            removeAlbum($_GET['album']);
+            removeAlbumDetails($_GET['album']);
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
@@ -61,6 +62,7 @@ function postAlbumDetails(){
 
 function getAlbumDetails($id = "0"){
     global $sqli_bdd;
+    global $bdd;
     $query = "SELECT * FROM details";
     $reponse = array();
 
@@ -69,9 +71,42 @@ function getAlbumDetails($id = "0"){
     }
 
     $result = mysqli_query($sqli_bdd,$query);
+    $hadDetails = false;
 
     while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
         $reponse[] = $row;
+        $hadDetails = true;
+    }
+
+    if (!$hadDetails && $id != "0"){
+        $albumRequest = json_decode(file_get_contents("./albums.php?album=" . $id));
+
+        $group = $albumRequest['artiste'];
+        $album = $albumRequest['nom'];
+
+
+        $data = readData($group['nom'], $album['nom']);
+        $newDetail = array();
+
+        if (count($data) > 0){
+            foreach ($data as $track){
+                $newTrack = array('id'=>$track[0], 'nom'=>$track[3], 'duree'=>$track[7]);
+                array_push($tracks, $newTrack);
+            }
+
+            $req = $bdd->prepare('INSERT INTO details(album, lastfm, tracks) VALUES(:album, :lastfm, :tracks)');
+            $req->execute(array(
+                'album' => $album['id'],
+                'lastfm' => returnURL($group['nom'], $album['nom']),
+                'tracks' => json_encode($tracks)
+            )) or die(print_r($req->errorInfo()));
+        }
+
+        $result = mysqli_query($sqli_bdd,$query);
+
+        while($row = mysqli_fetch_array($result,MYSQLI_ASSOC)){
+            $reponse[] = $row;
+        }
     }
 
     header('Content-Type: application/json');

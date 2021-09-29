@@ -78,6 +78,7 @@ footer{
     flex-wrap: wrap;
     padding: 5px;
     justify-content: center;
+    min-height: 308px;
 }
 
 .groupContent{
@@ -254,15 +255,14 @@ footer{
     border-radius: 10px;
     box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
     background-image: linear-gradient(white, whitesmoke);
+
+    animation-name: flip;
+    animation-duration: 1s;
+    backface-visibility: hidden;
 }
 
 .albumCard:hover{
     background-image: linear-gradient(white, rgb(2,170,176));
-}
-
-.flip{
-    -webkit-transform: rotateY(0deg);
-    -moz-transform: rotateY(0deg);
 }
 
 .albumCard-pochette-Section{
@@ -457,6 +457,8 @@ footer{
 }
 
 .infoBackground{
+    display: none;
+
     z-index: 105;
 
     background: rgba(255, 255, 255, 0.5);
@@ -634,6 +636,15 @@ footer{
 
 .loadingAnimation{
     height: 100%;
+}
+
+.flipPage{
+    animation: returnPage 0.25s infinite linear;
+}
+
+@keyframes returnPage {
+    from{transform: rotate3d(1,1,1,0deg)}
+    to{transform: rotate3d(1,1,1,360deg)}
 }
 
 @font-face {

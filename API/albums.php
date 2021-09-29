@@ -54,6 +54,10 @@ function getAlbum($id = "0", $page = "-1"){
     $albums = $result->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($albums as $album){
+        $groupeResult = $bdd->query("SELECT nom FROM groupes WHERE id={$album['artiste']}");
+        $artiste = $groupeResult->fetchAll();
+
+        $album['artiste'] = $artiste[0]['nom'];
         $reponse[] = $album;
     }
 
