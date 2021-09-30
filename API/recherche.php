@@ -52,6 +52,23 @@ function getGroupSearch($arg){
     $groupes = $result->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($groupes as $group){
+        $genreResultID = $bdd->query("SELECT genre FROM link_groupe_genre WHERE groupe={$group['id']}");
+        $genresID = $genreResultID->fetchAll(PDO::FETCH_ASSOC);
+
+        $groupGenre = array();
+
+        foreach ($genresID as $ID){
+            $genreR_ = $bdd->query("SELECT nom FROM genres WHERE id={$ID['genre']}");
+            $genres = $genreR_->fetchAll(PDO::FETCH_ASSOC);
+
+            foreach ($genres as $genre){
+                array_push($groupGenre, $genre);
+            }
+        }
+
+        $group['genres'] = $groupGenre;
+
+
         $reponse[] = $group;
         $foundSomthing = true;
     }
@@ -75,6 +92,22 @@ function getResearch($arg)
 
     foreach ($albumResearch['groupes'] as $groupe){
         if (!in_array($groupe, $result['groupes'])){
+            $genreResultID = $bdd->query("SELECT genre FROM link_groupe_genre WHERE groupe={$groupe['id']}");
+            $genresID = $genreResultID->fetchAll(PDO::FETCH_ASSOC);
+
+            $groupGenre = array();
+
+            foreach ($genresID as $ID){
+                $genreR_ = $bdd->query("SELECT nom FROM genres WHERE id={$ID['genre']}");
+                $genres = $genreR_->fetchAll(PDO::FETCH_ASSOC);
+
+                foreach ($genres as $genre){
+                    array_push($groupGenre, $genre);
+                }
+            }
+
+            $groupe['genres'] = $groupGenre;
+
             $result['groupes'][] = $groupe;
         }
     }

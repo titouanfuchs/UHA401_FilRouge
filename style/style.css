@@ -638,12 +638,47 @@ footer{
     height: 15em;
 }
 
+
 .loadingAnimation{
     height: 100%;
 }
 
 .flipPage{
-    animation: returnPage 0.25s infinite linear;
+    animation: returnPage 60s infinite linear;
+}
+
+.paginationButton{
+    display: block;
+    margin: 5px;
+
+    min-width: 5em;
+}
+
+.paginationHeader{
+    /*border: black 1px solid;*/
+    color:whitesmoke;
+    text-align: center;
+    vertical-align: center;
+    padding: 1px;
+    border-radius: 10px;
+    background: #2b2b2b;
+    min-width: 40%;
+    width: 90%;
+    min-height: 10%;
+    height: 3em;
+
+    box-shadow: 0px 6px 6px rgba(0,0,0,0.4);
+
+    margin:auto;
+    margin-bottom: 5px;
+
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+
+    overflow-y: hidden;
+    overflow-x: auto;
 }
 
 @keyframes returnPage {

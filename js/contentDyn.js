@@ -10,30 +10,21 @@ document.onload = initPage();
 
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
     if (sessionStorage.getItem('searchArg') === null || sessionStorage.getItem('searchArg') == ""){
-        //Groupes
-        readAPI("groupes?count").then(function (count){
-            createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePage");
-        });
-
         if (sessionStorage.getItem('groupPage') === null){
             sessionStorage.setItem('groupPage', '1');
-            getGroupSearch(null,1);
         }else{
             console.log(sessionStorage.getItem("groupPage"));
             getGroupSearch(null,sessionStorage.getItem("groupPage"));
         }
 
-        readAPI("albums?count").then(function (count){
-            createPaginationButtons(Math.ceil(count/5), "albumPaginationButtons", "albumChangePage");
-        });
-
         if (sessionStorage.getItem('albumPage') === null){
             sessionStorage.setItem('albumPage', '1');
-            getAlbumSearch(null,1);
         }else{
             //console.log(sessionStorage.getItem("albumPage"));
             getAlbumSearch(null,sessionStorage.getItem("albumPage"));
         }
+
+        search();
     }else{
         search(sessionStorage.getItem('searchArg'));
     }
@@ -57,11 +48,21 @@ function readAPI(api){
 }
 
 function search(){
+    document.getElementById("researchSubmit").disabled = true;
+
+    sleep(1000).then(() => {
+        document.getElementById("researchSubmit").disabled = false;
+    })
+
    let arg = document.getElementById("researchValue").value;
    sessionStorage.setItem("searchArg", arg);
 
-   if (arg.length > 0){
+   if (arg !== ""){
+       console.log("coucou");
        readAPI("recherche?search=" + arg).then(function (result){
+           document.getElementById("albumPaginationButtons").innerHTML = "";
+           document.getElementById("groupPaginationButtons").innerHTML = "";
+
            const groupes = result['groupes'];
            const albums = result['albums'];
 
@@ -88,6 +89,14 @@ function search(){
            }
        })
    }else{
+       readAPI("groupes?count").then(function (count){
+           createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePage");
+       });
+
+       readAPI("albums?count").then(function (count){
+           createPaginationButtons(Math.ceil(count/5), "albumPaginationButtons", "albumChangePage");
+       });
+
        groupChangePage(1);
        albumChangePage(1);
    }
@@ -159,11 +168,20 @@ function LoadingCard(container){
 }
 
 function groupChangePage(page){
+    document.getElementById("groupPaginationButtons_" + (page-1)).disabled = true;
+    sleep(1000).then(() => {
+        document.getElementById("groupPaginationButtons_" + (page-1)).disabled = false;
+    })
     sessionStorage.setItem("groupPage", page.toString());
+
     getGroupSearch(null, page);
 }
 
 function albumChangePage(page){
+    document.getElementById("albumPaginationButtons_" + (page-1)).disabled = true;
+    sleep(1000).then(() => {
+        document.getElementById("albumPaginationButtons_" + (page-1)).disabled = false;
+    })
     sessionStorage.setItem("albumPage", page.toString());
     getAlbumSearch(null, page);
 }
@@ -195,7 +213,9 @@ function createPaginationButtons(count, parent, fct){
     document.getElementById(parent).innerHTML = "";
     for (let i = 0; i < count; i++){
         let button = document.createElement("Button");
+        button.setAttribute("id", parent + "_" + i);
         button.setAttribute("onClick", fct + "(" + (i+1) + ")");
+        button.classList.add("paginationButton");
         button.innerText = i + 1;
 
         document.getElementById(parent).appendChild(button);

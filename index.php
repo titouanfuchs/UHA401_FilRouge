@@ -4,6 +4,7 @@
     <meta charset="utf-8" />
     <title>MusicPass</title>
     <link rel="stylesheet" href="style/style.css"/>
+    <link rel="icon" href="images/bob.jpeg" />
 </head>
 
 <body id="body">
@@ -55,7 +56,7 @@
         <h1>Groupes</h1>
     </section>
 
-    <section class="contentHeader" id="groupPaginationButtons">
+    <section class="paginationHeader" id="groupPaginationButtons">
 
     </section>
 
@@ -67,7 +68,7 @@
         <h1>Albums</h1>
     </section>
 
-    <section class="contentHeader" id="albumPaginationButtons">
+    <section class="paginationHeader" id="albumPaginationButtons">
 
     </section>
 
