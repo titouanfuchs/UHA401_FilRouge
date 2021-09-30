@@ -9,7 +9,7 @@ const pisteInfo = document.getElementById("pistesDetails");
 document.onload = initPage();
 
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
-    if (sessionStorage.getItem('searchArg') === null){
+    if (sessionStorage.getItem('searchArg') === null || sessionStorage.getItem('searchArg') == ""){
         //Groupes
         readAPI("groupes?count").then(function (count){
             createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePage");
@@ -34,6 +34,8 @@ function initPage(){ //Initialisation de la page avec tout les éléments de la 
             //console.log(sessionStorage.getItem("albumPage"));
             getAlbumSearch(null,sessionStorage.getItem("albumPage"));
         }
+    }else{
+        search(sessionStorage.getItem('searchArg'));
     }
 }
 
@@ -56,6 +58,7 @@ function readAPI(api){
 
 function search(){
    let arg = document.getElementById("researchValue").value;
+   sessionStorage.setItem("searchArg", arg);
 
    if (arg.length > 0){
        readAPI("recherche?search=" + arg).then(function (result){
@@ -192,7 +195,7 @@ function createPaginationButtons(count, parent, fct){
     document.getElementById(parent).innerHTML = "";
     for (let i = 0; i < count; i++){
         let button = document.createElement("Button");
-        button.setAttribute("onClick", fct + "(null," + (i+1) + ");");
+        button.setAttribute("onClick", fct + "(" + (i+1) + ")");
         button.innerText = i + 1;
 
         document.getElementById(parent).appendChild(button);

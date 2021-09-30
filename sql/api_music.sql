@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : ven. 24 sep. 2021 à 15:14
+-- Généré le : jeu. 30 sep. 2021 à 13:15
 -- Version du serveur : 10.4.21-MariaDB
 -- Version de PHP : 8.0.10
 
@@ -76,7 +76,7 @@ CREATE TABLE `groupes` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `link_album_genre`
+-- Structure de la table `link_groupe_genre`
 --
 
 CREATE TABLE `link_groupe_genre` (
@@ -107,7 +107,8 @@ ALTER TABLE `details`
 -- Index pour la table `genres`
 --
 ALTER TABLE `genres`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nom` (`nom`);
 
 --
 -- Index pour la table `groupes`
@@ -116,10 +117,11 @@ ALTER TABLE `groupes`
   ADD PRIMARY KEY (`id`);
 
 --
--- Index pour la table `link_album_genre`
+-- Index pour la table `link_groupe_genre`
 --
 ALTER TABLE `link_groupe_genre`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `groupe_2` (`groupe`,`genre`),
   ADD KEY `groupe` (`groupe`),
   ADD KEY `genre` (`genre`);
 
@@ -152,7 +154,7 @@ ALTER TABLE `groupes`
   MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT pour la table `link_album_genre`
+-- AUTO_INCREMENT pour la table `link_groupe_genre`
 --
 ALTER TABLE `link_groupe_genre`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
@@ -174,7 +176,7 @@ ALTER TABLE `details`
   ADD CONSTRAINT `details_ibfk_1` FOREIGN KEY (`album`) REFERENCES `albums` (`id`);
 
 --
--- Contraintes pour la table `link_album_genre`
+-- Contraintes pour la table `link_groupe_genre`
 --
 ALTER TABLE `link_groupe_genre`
   ADD CONSTRAINT `link_groupe_genre_ibfk_1` FOREIGN KEY (`groupe`) REFERENCES `groupes` (`id`),

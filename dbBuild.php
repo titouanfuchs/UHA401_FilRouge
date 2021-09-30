@@ -1,6 +1,6 @@
 <?php
 
-require ("connexion_base.php");
+include ("connexion_base.php");
 
 if (isset($_GET['action'])){
     switch ($_GET['action']){
@@ -36,11 +36,11 @@ function clearDB(){
     global $bdd;
 
     $bdd->query("SET FOREIGN_KEY_CHECKS = 0;");
-    $bdd->query("TRUNCATE genres");
     $bdd->query("TRUNCATE details");
     $bdd->query("TRUNCATE albums");
     $bdd->query("TRUNCATE groupes");
     $bdd->query("TRUNCATE link_groupe_genre");
+    $bdd->query("TRUNCATE genres");
     $bdd->query("SET FOREIGN_KEY_CHECKS = 1;");
 }
 
@@ -142,7 +142,6 @@ function redirect(){
 
 function total(){
     buildBD();
-    clearDB();
     fillBD();
     redirect();
 }
