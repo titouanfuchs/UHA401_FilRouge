@@ -9,7 +9,7 @@ const pisteInfo = document.getElementById("pistesDetails");
 document.onload = initPage();
 
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
-    if (sessionStorage.getItem('searchArg') === null || sessionStorage.getItem('searchArg') == ""){
+    if (sessionStorage.getItem('searchArg') === null || sessionStorage.getItem('searchArg').trim() == ""){
         if (sessionStorage.getItem('groupPage') === null){
             sessionStorage.setItem('groupPage', '1');
         }else{
@@ -57,7 +57,7 @@ function search(){
    let arg = document.getElementById("researchValue").value;
    sessionStorage.setItem("searchArg", arg);
 
-   if (arg !== ""){
+   if (arg.trim() !== ""){
        console.log("coucou");
        readAPI("recherche?search=" + arg).then(function (result){
            document.getElementById("albumPaginationButtons").innerHTML = "";
