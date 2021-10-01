@@ -10,21 +10,23 @@ document.onload = initPage();
 
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
     if (sessionStorage.getItem('searchArg') === null || sessionStorage.getItem('searchArg').trim() == ""){
+        search();
+        console.log("premiere connexion");
         if (sessionStorage.getItem('groupPage') === null){
             sessionStorage.setItem('groupPage', '1');
         }else{
             console.log(sessionStorage.getItem("groupPage"));
-            getGroupSearch(null,sessionStorage.getItem("groupPage"));
+            //getGroupSearch(null,sessionStorage.getItem("groupPage"));
+            groupChangePage(1);
         }
 
         if (sessionStorage.getItem('albumPage') === null){
             sessionStorage.setItem('albumPage', '1');
         }else{
             //console.log(sessionStorage.getItem("albumPage"));
-            getAlbumSearch(null,sessionStorage.getItem("albumPage"));
+            //getAlbumSearch(null,sessionStorage.getItem("albumPage"));
+            albumChangePage(1);
         }
-
-        search();
     }else{
         search(sessionStorage.getItem('searchArg'));
     }
@@ -169,9 +171,15 @@ function LoadingCard(container){
 
 function groupChangePage(page){
     document.getElementById("groupPaginationButtons_" + (page-1)).disabled = true;
-    sleep(1000).then(() => {
-        document.getElementById("groupPaginationButtons_" + (page-1)).disabled = false;
-    })
+
+    let current = (parseInt(sessionStorage.getItem("groupPage"))-1)
+
+    if (current !== page-1){
+        sleep(1000).then(() => {
+            document.getElementById("groupPaginationButtons_" + current).disabled = false;
+        })
+    }
+
     sessionStorage.setItem("groupPage", page.toString());
 
     getGroupSearch(null, page);
@@ -179,13 +187,18 @@ function groupChangePage(page){
 
 function albumChangePage(page){
     document.getElementById("albumPaginationButtons_" + (page-1)).disabled = true;
-    sleep(1000).then(() => {
-        document.getElementById("albumPaginationButtons_" + (page-1)).disabled = false;
-    })
+
+    let current = (parseInt(sessionStorage.getItem("albumPage"))-1)
+
+    if (current !== page-1){
+        sleep(1000).then(() => {
+            document.getElementById("albumPaginationButtons_" + current).disabled = false;
+        })
+    }
+
     sessionStorage.setItem("albumPage", page.toString());
     getAlbumSearch(null, page);
 }
-
 function showAlbumDetails(id){
     pisteInfo.innerHTML = "";
 
