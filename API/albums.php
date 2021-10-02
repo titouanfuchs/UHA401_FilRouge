@@ -7,9 +7,7 @@ $headers = apache_request_headers();
 
 switch($request_method){
     case 'GET':
-        if (!empty($_GET['search'])){
-            getAlbumSearch($_GET['search']);
-        }else if (isset($_GET['count'])){
+        if (isset($_GET['count'])){
             countAlbums();
         }else if (!empty($_GET["album"])){
             getAlbum($_GET["album"]);
