@@ -10,23 +10,30 @@ document.onload = initPage();
 
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
     if (sessionStorage.getItem('searchArg') === null || sessionStorage.getItem('searchArg').trim() == ""){
-        search();
-        console.log("premiere connexion");
-        if (sessionStorage.getItem('groupPage') === null){
-            sessionStorage.setItem('groupPage', '1');
-        }else{
-            console.log(sessionStorage.getItem("groupPage"));
-            //getGroupSearch(null,sessionStorage.getItem("groupPage"));
-            groupChangePage(1);
-        }
+        readAPI("groupes?count").then(function (count){
+            createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePage");
+        }).then(() =>{
+            readAPI("albums?count").then(function (count){
+                createPaginationButtons(Math.ceil(count/5), "albumPaginationButtons", "albumChangePage");
+            }).then(() => {
+                console.log("premiere connexion");
+                if (sessionStorage.getItem('groupPage') === null){
+                    sessionStorage.setItem('groupPage', '1');
+                    groupChangePage(1);
+                }else{
+                    console.log(sessionStorage.getItem("groupPage"));
+                    groupChangePage(1);
+                }
 
-        if (sessionStorage.getItem('albumPage') === null){
-            sessionStorage.setItem('albumPage', '1');
-        }else{
-            //console.log(sessionStorage.getItem("albumPage"));
-            //getAlbumSearch(null,sessionStorage.getItem("albumPage"));
-            albumChangePage(1);
-        }
+                if (sessionStorage.getItem('albumPage') === null){
+                    sessionStorage.setItem('albumPage', '1');
+                    albumChangePage(1);
+                }else{
+                    albumChangePage(1);
+                }
+            });
+        });
+
     }else{
         search(sessionStorage.getItem('searchArg'));
     }
@@ -93,14 +100,14 @@ function search(){
    }else{
        readAPI("groupes?count").then(function (count){
            createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePage");
+       }).then(() => {
+           readAPI("albums?count").then(function (count){
+               createPaginationButtons(Math.ceil(count/5), "albumPaginationButtons", "albumChangePage");
+           }).then(() => {
+               groupChangePage(1);
+               albumChangePage(1);
+           })
        });
-
-       readAPI("albums?count").then(function (count){
-           createPaginationButtons(Math.ceil(count/5), "albumPaginationButtons", "albumChangePage");
-       });
-
-       groupChangePage(1);
-       albumChangePage(1);
    }
 }
 
