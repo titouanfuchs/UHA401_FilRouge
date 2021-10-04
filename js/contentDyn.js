@@ -67,13 +67,15 @@ function search(){
    sessionStorage.setItem("searchArg", arg);
 
    if (arg.trim() !== ""){
-       console.log("coucou");
        readAPI("recherche?search=" + arg).then(function (result){
            document.getElementById("albumPaginationButtons").innerHTML = "";
            document.getElementById("groupPaginationButtons").innerHTML = "";
 
            const groupes = result['groupes'];
            const albums = result['albums'];
+
+           console.log(groupes);
+           console.log(groupes.length);
 
            if (groupes.length > 0){
                getGroupSearch(groupes);

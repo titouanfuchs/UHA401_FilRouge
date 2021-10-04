@@ -89,32 +89,33 @@ function getResearch($arg)
     }
 
     $albumResearch = getAlbumSearch($arg);
+    $groupeResult = array();
 
     foreach ($albumResearch['groupes'] as $groupe){
-        if (!in_array($groupe, $result['groupes'])){
-            $genreResultID = $bdd->query("SELECT genre FROM link_groupe_genre WHERE groupe={$groupe['id']}");
-            $genresID = $genreResultID->fetchAll(PDO::FETCH_ASSOC);
+        $genreResultID = $bdd->query("SELECT genre FROM link_groupe_genre WHERE groupe={$groupe['id']}");
+        $genresID = $genreResultID->fetchAll(PDO::FETCH_ASSOC);
 
-            $groupGenre = array();
+        $groupGenre = array();
 
-            foreach ($genresID as $ID){
-                $genreR_ = $bdd->query("SELECT nom FROM genres WHERE id={$ID['genre']}");
-                $genres = $genreR_->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($genresID as $ID){
+            $genreR_ = $bdd->query("SELECT nom FROM genres WHERE id={$ID['genre']}");
+            $genres = $genreR_->fetchAll(PDO::FETCH_ASSOC);
 
-                foreach ($genres as $genre){
-                    array_push($groupGenre, $genre);
-                }
+            foreach ($genres as $genre){
+                array_push($groupGenre, $genre);
             }
-
-            $groupe['genres'] = $groupGenre;
-
-            $result['groupes'][] = $groupe;
         }
+
+        $groupe['genres'] = $groupGenre;
+
+        $groupeResult[] = $groupe;
     }
 
     foreach ($albumResearch['albums'] as $album){
         $result['albums'][] = $album;
     }
+
+    $result['groupes'] = array_unique($result['groupes'], SORT_REGULAR);
 
     header('Content-Type: application/json');
     echo json_encode($result, JSON_PRETTY_PRINT);

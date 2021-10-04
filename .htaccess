@@ -2,16 +2,16 @@ RewriteEngine On # Activer le module Rewrite
 
 #API
 RewriteRule ^API/details/?$ ./API/details.php [NC,L]
-RewriteRule ^[^/]+/(\d+)$ ./API/details.php?album=$1
+RewriteRule ^API/details+/(\d+)$ ./API/details.php?album=$1
 
 RewriteRule ^API/albums/?$ ./API/albums.php [NC,L]
-RewriteRule ^[^/]+/(\d+)$ ./API/albums.php?album=$1
+RewriteRule ^API/albums+/(\d+)$ ./API/albums.php?album=$1
 
 RewriteRule ^API/groupes/?$ ./API/groupes.php [NC,L]
-RewriteRule ^[^/]+/(\d+)$ ./API/groupes.php?groupe=$1
+RewriteRule ^API/groupes+/(\d+)$ ./API/groupes.php?groupe=$1
 
 RewriteRule ^API/recherche/?$ ./API/recherche.php [NC,L]
-RewriteRule ^[^/]+/(\d+)$ ./API/recherche.php?search=$1
+RewriteRule ^API/recherche+/(\d+)$ ./API/recherche.php?search=$1
 
 #bdd
 RewriteRule ^dbBuild/?$ ./dbBuild.php [NC,L]
