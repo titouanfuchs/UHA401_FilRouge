@@ -28,13 +28,14 @@ function getAlbumSearch($arg){
     $albums = $result->fetchAll(PDO::FETCH_ASSOC);
 
     foreach ($albums as $album){
-        $reponse["albums"][] = $album;
-
         $groupeReponse = $bdd->query("SELECT * FROM groupes WHERE id='{$album['artiste']}'");
         $groupes = $groupeReponse->fetchAll(PDO::FETCH_ASSOC);
 
+        $album["artiste"] = $groupes[0]["nom"];
+
         $reponse["groupes"][] = $groupes[0];
 
+        $reponse["albums"][] = $album;
         $foundSomthing = true;
     }
 
@@ -89,7 +90,6 @@ function getResearch($arg)
     }
 
     $albumResearch = getAlbumSearch($arg);
-    $groupeResult = array();
 
     foreach ($albumResearch['groupes'] as $groupe){
         $genreResultID = $bdd->query("SELECT genre FROM link_groupe_genre WHERE groupe={$groupe['id']}");
@@ -108,14 +108,14 @@ function getResearch($arg)
 
         $groupe['genres'] = $groupGenre;
 
-        $groupeResult[] = $groupe;
+        if (!in_array($groupe, $result['groupes'])){
+            $result['groupes'][] = $groupe;
+        }
     }
 
     foreach ($albumResearch['albums'] as $album){
         $result['albums'][] = $album;
     }
-
-    $result['groupes'] = array_unique($result['groupes'], SORT_REGULAR);
 
     header('Content-Type: application/json');
     echo json_encode($result, JSON_PRETTY_PRINT);
