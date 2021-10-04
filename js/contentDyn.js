@@ -247,6 +247,7 @@ function createPaginationButtons(count, parent, fct){
 function createNoResultCard(parent){
     const newCard = document.createElement("div");
     newCard.classList.add("Card");
+    newCard.classList.add("CardFlip");
 
     const section = document.createElement("section");
     section.classList.add("noResult")
@@ -283,7 +284,9 @@ function createPisteCard(id, nom, duree){
 
 function createAlbumCard(albumId, nom, groupe, sortie, pistes, pochette, id){
     const newCard = document.createElement("div");
+    newCard.classList.add("Card");
     newCard.classList.add("albumCard");
+    newCard.classList.add("CardFlip");
 
     const pochetteSection = document.createElement("section");
     pochetteSection.classList.add("albumCard-pochette-Section");
@@ -323,7 +326,9 @@ function createAlbumCard(albumId, nom, groupe, sortie, pistes, pochette, id){
 function createGroupCard(nom, chanteur, origine, genres, id){
     //Creation de la nouvelle Carte
     const newCard = document.createElement("div");
+    newCard.classList.add("Card");
     newCard.classList.add("groupCard");
+    newCard.classList.add("CardFlip");
 
     //Section IMG
     const IMGSection = document.createElement("section");

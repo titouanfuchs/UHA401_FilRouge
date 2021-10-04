@@ -234,19 +234,25 @@ footer{
     border-radius: 10px;
     box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
     background-image: linear-gradient(white, whitesmoke);
+}
 
+.Card:hover{
+    background-image: linear-gradient(white, rgb(2,170,176));
+}
+
+.CardFlip{
     animation-name: flip;
     animation-duration: 1s;
     backface-visibility: hidden;
 }
 
+@keyframes flip{
+    from{transform: rotateX(180deg);}
+    to{transform: rotateX(0deg);}
+}
+
 /*---AlbumCard--*/
 .albumCard{
-    font-family: clean-sans;
-    overflow: hidden;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
     justify-content: space-evenly;
 
     margin: 5px;
@@ -254,19 +260,6 @@ footer{
 
     width: 27em;
     height: 15em;
-
-    /*border: black 1px solid;*/
-    border-radius: 10px;
-    box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
-    background-image: linear-gradient(white, whitesmoke);
-
-    animation-name: flip;
-    animation-duration: 1s;
-    backface-visibility: hidden;
-}
-
-.albumCard:hover{
-    background-image: linear-gradient(white, rgb(2,170,176));
 }
 
 .albumCard-pochette-Section{
@@ -331,10 +324,6 @@ footer{
 
 /*---GroupCard---*/
 .groupCard{
-    overflow: hidden;
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
     justify-content: space-evenly;
 
     margin: 10px;
@@ -343,20 +332,6 @@ footer{
     min-width: 30em;
     width: 30em;
     height: 15em;
-
-    /*border: black 1px solid;*/
-    border-radius: 10px;
-    box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
-    background-image: linear-gradient(white, whitesmoke);
-
-    animation-name: flip;
-    animation-duration: 1s;
-    backface-visibility: hidden;
-}
-
-@keyframes flip{
-    from{transform: rotateX(180deg);}
-    to{transform: rotateX(0deg);}
 }
 
 .groupCard:hover{
@@ -815,22 +790,10 @@ footer{
     }
 
     .albumCard{
-        font-family: clean-sans;
-        overflow: hidden;
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-evenly;
-
         margin: 5px;
         padding: 5px;
 
         width: 40em;
         height: 25em;
-
-        /*border: black 1px solid;*/
-        border-radius: 10px;
-        box-shadow: 0px 4px 5px rgba(0,0,0,0.4);
-        background-image: linear-gradient(white, whitesmoke);
     }
 }
