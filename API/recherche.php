@@ -22,7 +22,6 @@ function getAlbumSearch($arg){
     global $bdd;
 
     $reponse = array("groupes" => array(), "albums"=>array());
-    $foundSomthing = false;
 
     $result = $bdd->query("SELECT * FROM albums WHERE nom LIKE '{$arg}%'");
     $albums = $result->fetchAll(PDO::FETCH_ASSOC);
@@ -36,7 +35,6 @@ function getAlbumSearch($arg){
         $reponse["groupes"][] = $groupes[0];
 
         $reponse["albums"][] = $album;
-        $foundSomthing = true;
     }
 
     return $reponse;
@@ -59,7 +57,7 @@ function getGroupSearch($arg){
         $groupGenre = array();
 
         foreach ($genresID as $ID){
-            $genreR_ = $bdd->query("SELECT nom FROM genres WHERE id={$ID['genre']}");
+            $genreR_ = $bdd->query("SELECT nom FROM genres WHERE id={$ID['genre']}"); //va disparaître
             $genres = $genreR_->fetchAll(PDO::FETCH_ASSOC);
 
             foreach ($genres as $genre){
