@@ -109,7 +109,7 @@ function pushGenreToBDD($genre){ //Remplissage des genres;
     $req = $bdd->prepare('INSERT INTO genres(nom) VALUES(:nom)');
     $req->execute(array(
         'nom' => $genre
-    )) or die(print_r($req->errorInfo()));
+    ))/* or die(print_r($req->errorInfo()))*/;
 }
 
 function pushGroupToBDD($group){
@@ -120,7 +120,7 @@ function pushGroupToBDD($group){
         'nom' => $group['nom'],
         'chanteur' => $group['chanteur'],
         'origin' => $group['origin']
-    )) or die(print_r($req->errorInfo()));
+    ))/* or die(print_r($req->errorInfo()))*/;
 }
 
 function pushAlbumToBDD($album){

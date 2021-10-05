@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : jeu. 30 sep. 2021 à 13:15
+-- Généré le : mar. 05 oct. 2021 à 10:47
 -- Version du serveur : 10.4.21-MariaDB
 -- Version de PHP : 8.0.10
 
@@ -80,7 +80,6 @@ CREATE TABLE `groupes` (
 --
 
 CREATE TABLE `link_groupe_genre` (
-  `id` int(11) NOT NULL,
   `groupe` int(11) NOT NULL,
   `genre` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -94,6 +93,7 @@ CREATE TABLE `link_groupe_genre` (
 --
 ALTER TABLE `albums`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nom artiste` (`nom`,`artiste`),
   ADD KEY `artiste` (`artiste`);
 
 --
@@ -120,8 +120,7 @@ ALTER TABLE `groupes`
 -- Index pour la table `link_groupe_genre`
 --
 ALTER TABLE `link_groupe_genre`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `groupe_2` (`groupe`,`genre`),
+  ADD PRIMARY KEY (`groupe`,`genre`) USING BTREE,
   ADD KEY `groupe` (`groupe`),
   ADD KEY `genre` (`genre`);
 
@@ -152,12 +151,6 @@ ALTER TABLE `genres`
 --
 ALTER TABLE `groupes`
   MODIFY `id` int(255) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `link_groupe_genre`
---
-ALTER TABLE `link_groupe_genre`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Contraintes pour les tables déchargées

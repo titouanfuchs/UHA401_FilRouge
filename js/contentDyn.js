@@ -239,7 +239,6 @@ function createPaginationButtons(count, parent, fct){
         button.setAttribute("onClick", fct + "(" + (i+1) + ")");
         button.classList.add("paginationButton");
         button.innerText = i + 1;
-
         document.getElementById(parent).appendChild(button);
     }
 }
