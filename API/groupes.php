@@ -9,6 +9,8 @@ switch($request_method){
     case 'GET':
         if (isset($_GET['count'])){
             countGroups();
+        }else if (isset($_GET['search'])){
+            getGroup(0, -1, $_GET['search']);
         }else if (!empty($_GET["groupe"])){
             getGroup($_GET["groupe"]);
         }else{
@@ -43,12 +45,16 @@ function countGroups(){
     echo json_encode($reponse[0], JSON_PRETTY_PRINT);
 }
 
-function getGroup($id = "0", $page = "-1"){
+function getGroup($id = "0", $page = "-1", $search = null){
     global $bdd;
     $query = "SELECT * FROM groupes";
     $reponse = array();
 
-    if ($id != "0"){
+    if ($search != null){
+        $query .= " WHERE nom LIKE '{$search}%'";
+    }
+
+    if ($id != "0" && $search == null){
         $query .= " WHERE id='{$id}' LIMIT 1";
     }
 

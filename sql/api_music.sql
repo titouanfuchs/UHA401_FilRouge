@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : mar. 05 oct. 2021 à 10:47
+-- Généré le : ven. 08 oct. 2021 à 08:17
 -- Version du serveur : 10.4.21-MariaDB
 -- Version de PHP : 8.0.10
 
@@ -114,7 +114,8 @@ ALTER TABLE `genres`
 -- Index pour la table `groupes`
 --
 ALTER TABLE `groupes`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `groupe` (`nom`);
 
 --
 -- Index pour la table `link_groupe_genre`
