@@ -9,6 +9,8 @@ switch($request_method){
     case 'GET':
         if (isset($_GET['count'])){
             countAlbums();
+        }else if (isset($_GET['groupe'])){
+            getAlbum(0, -1, null, $_GET['groupe']);
         }else if (isset($_GET['search'])){
             getAlbum(0, -1, $_GET['search']);
         }else if (!empty($_GET["album"])){
@@ -35,12 +37,14 @@ function countAlbums(){
     echo json_encode($reponse[0], JSON_PRETTY_PRINT);
 }
 
-function getAlbum($id = "0", $page = "-1", $search = null){
+function getAlbum($id = "0", $page = "-1", $search = null, $groupe = 0){
     global $bdd;
     $query = "SELECT * FROM albums";
     $reponse = array();
 
-    if ($search != null){
+    if ($groupe != 0){
+        $query .= " WHERE artiste={$groupe}";
+    }else if ($search != null){
         $query .= " WHERE nom LIKE '{$search}%'";
     }else if ($id != "0"){
         $query .= " WHERE id='{$id}' LIMIT 1";
