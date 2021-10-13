@@ -1,7 +1,7 @@
 <?php
     session_start();
-    $_SESSION['user'] = 'root';
-    $_SESSION['pass'] = '';
+    $_SESSION['user'] = 'local';
+    $_SESSION['pass'] = 'Ms1570lety_';
 
     $_SESSION['APIPASS'] = 'Parcequejailedroit';
     global $bdd;
@@ -11,5 +11,5 @@
 
     $bdd = new PDO('mysql:host=localhost;dbname=api_music;charset=utf8', "{$_SESSION['user']}", "{$_SESSION['pass']}");
     global $sqli_bdd;
-    $sqli_bdd = mysqli_connect("localhost", $_SESSION['user'], $_SESSION['pass'], "musicpass");
+    $sqli_bdd = mysqli_connect("localhost", $_SESSION['user'], $_SESSION['pass'], "api_music");
 ?>
