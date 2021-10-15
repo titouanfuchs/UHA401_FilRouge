@@ -6,15 +6,12 @@ if (isset($_GET['action'])){
     switch ($_GET['action']){
         case "clear":
             clearDB();
-            redirect();
             break;
         case "build":
             buildBD();
-            redirect();
             break;
         case "fill":
             fillBD();
-            redirect();
             break;
         default:
             total();
@@ -136,12 +133,7 @@ function pushAlbumToBDD($album){
     )) or die(print_r($req->errorInfo()));
 }
 
-function redirect(){
-    header('Location: ./');
-}
-
 function total(){
     buildBD();
     fillBD();
-    redirect();
 }
