@@ -57,7 +57,7 @@ function postAlbumDetails(){
         $req->execute(array(
             'album' => $PUT['album'],
             'lastfm' => $PUT['lastfm'],
-            'tracks' => json_encode($PUT['tracks'], true)
+            'tracks' => json_encode($PUT['tracks'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)
         )) or die(print_r($req->errorInfo()));
 
         $reponse = array('status' => 1, 'status_message' => 'Ajout réussis !');
@@ -123,7 +123,7 @@ function getAlbumDetails($id = "0"){
     }
 
     header('Content-Type: application/json');
-    echo json_encode($reponse, JSON_PRETTY_PRINT);
+    echo json_encode($reponse, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
 }
 
 function editAlbumDetails($id){
