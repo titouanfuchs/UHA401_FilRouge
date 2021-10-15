@@ -10,10 +10,10 @@ document.onload = initPage();
 
 function initPage(){ //Initialisation de la page avec tout les éléments de la recherche
     if (sessionStorage.getItem('searchArg') === null || sessionStorage.getItem('searchArg').trim() == ""){
-        readAPI("groupes.php?count").then(function (count){
+        readAPI("groupes?count").then(function (count){
             createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePage");
         }).then(() =>{
-            readAPI("albums.php?count").then(function (count){
+            readAPI("albums?count").then(function (count){
                 createPaginationButtons(Math.ceil(count/5), "albumPaginationButtons", "albumChangePage");
             }).then(() => {
                 console.log("premiere connexion");
@@ -100,10 +100,10 @@ function search(){
            }
        })
    }else{
-       readAPI("groupes.php?count").then(function (count){
+       readAPI("groupes?count").then(function (count){
            createPaginationButtons(Math.ceil(count/5), "groupPaginationButtons", "groupChangePage");
        }).then(() => {
-           readAPI("albums.php?count").then(function (count){
+           readAPI("albums?count").then(function (count){
                createPaginationButtons(Math.ceil(count/5), "albumPaginationButtons", "albumChangePage");
            }).then(() => {
                groupChangePage(1);
@@ -118,7 +118,7 @@ function getAlbumSearch(albumData, page){
 
     sleep(400).then(() => {
         if (albumData == null){ //Quand pas de recherche effectuée;
-            readAPI("albums.php?page=" + page.toString()).then(function(albums){
+            readAPI("albums?page=" + page.toString()).then(function(albums){
                 let albumArray = Object.values(albums);
                 albumContent.innerHTML = "";
                 for (let al in albums){
@@ -144,7 +144,7 @@ function getGroupSearch(groupes, page){
 
     sleep(400).then(() => {
         if (groupes == null){ //Quand pas de recherche effectuée;
-            readAPI("groupes.php?page=" + page.toString()).then(function(groupes){
+            readAPI("groupes?page=" + page.toString()).then(function(groupes){
                 let groupArray = Object.values(groupes);
                 groupContent.style.justifyContent = "left";
                 groupContent.innerHTML = "";
@@ -211,13 +211,13 @@ function albumChangePage(page){
 function showAlbumDetails(id){
     pisteInfo.innerHTML = "";
 
-    readAPI("albums.php?album=" + id).then(function (albums){
+    readAPI("albums?album=" + id).then(function (albums){
         let album = albums[0];
         pochetteInfo.setAttribute("src", album['couverture']);
         titreInfo.innerText = album['nom'];
         albumInfo.style.display = "block";
 
-        readAPI("details.php?album="+id).then(function(details){
+        readAPI("details?album="+id).then(function(details){
             let pistes = JSON.parse(details[0]['tracks']);
 
             for (let piste in pistes){

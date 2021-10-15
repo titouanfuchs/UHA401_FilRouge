@@ -47,17 +47,18 @@ switch($request_method){
 
 function postAlbumDetails(){
     global $bdd;
+    global $sqli_bdd;
 
     $reponse = array();
 
     $PUT = json_decode(file_get_contents('php://input'), true);
 
-    if (isset($PUT['album']) && isset($PUT['lastfm']) && isset($PUT['tracks'])){
-        $req = $bdd->prepare('INSERT INTO details(album, lastfm, tracks) VALUES(:album, :lastfm, :tracks)');
+    if (isset($PUT['album']) && isset($PUT['lastfm']) && isset($PUT['description'])){
+        $req = $bdd->prepare('INSERT INTO details(album, lastfm, description) VALUES(:album, :lastfm, :description)');
         $req->execute(array(
             'album' => $PUT['album'],
             'lastfm' => $PUT['lastfm'],
-            'tracks' => json_encode($PUT['tracks'], JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES)
+            'description' => mysqli_real_escape_string($sqli_bdd,$PUT['description'])
         )) or die(print_r($req->errorInfo()));
 
         $reponse = array('status' => 1, 'status_message' => 'Ajout réussis !');
@@ -89,41 +90,11 @@ function getAlbumDetails($id = "0"){
     }
 
     if (!$hadDetails && $id != "0"){
-        /*$albumRequest = returnAlbum($id);
-
-        $group = $albumRequest[0]['artiste'];
-        $album = $albumRequest[0];
-
-        $data = readData($group, $album['nom']);
-        $newDetail = array();
-        $tracks = array();
-
-        if (count($data) > 0){
-            foreach ($data as $track){
-                $newTrack = array('id'=>$track[0], 'nom'=>$track[3], 'duree'=>$track[7]);
-                array_push($tracks, $newTrack);
-            }
-
-            $req = $bdd->prepare('INSERT INTO details(album, lastfm, tracks) VALUES(:album, :lastfm, :tracks)');
-            $req->execute(array(
-                'album' => $album['id'],
-                'lastfm' => returnURL($group, $album['nom']),
-                'tracks' => json_encode($tracks)
-            )) or die(print_r($req->errorInfo()));
-        }
-
-        $result = $bdd->query($query);
-        $details = $result->fetchAll(PDO::FETCH_ASSOC);
-
-        foreach ($details as $detail){
-            $reponse[] = $detail;
-        }*/
-
         $reponse = array('status' => 0, 'status_message' => 'Aucun résultat');
     }
 
     header('Content-Type: application/json');
-    echo json_encode($reponse, JSON_UNESCAPED_UNICODE|JSON_UNESCAPED_SLASHES);
+    echo json_encode($reponse, true);
 }
 
 function editAlbumDetails($id){
@@ -136,6 +107,7 @@ function editAlbumDetails($id){
     $reponse = array();
     $done = false;
     $echecat = "";
+    $sql_err = "";
 
     if (isset($PUT['album']) && $success){
         if (!mysqli_query($sqli_bdd, "UPDATE details SET album={$PUT['album']} WHERE album={$id}")){
@@ -155,12 +127,11 @@ function editAlbumDetails($id){
         }
     }
 
-    if (isset($PUT['tracks']) && $success){
-        $jsonTracks = json_encode($PUT['tracks']);
-
-        if (!mysqli_query($sqli_bdd, "UPDATE details SET tracks='{$jsonTracks}' WHERE album={$id}")){
+    if (isset($PUT['description']) && $success){
+        $text = mysqli_real_escape_string($sqli_bdd,$PUT['description']);
+        if (!mysqli_query($sqli_bdd, "UPDATE details SET description='{$text}' WHERE album={$id}")){
             $success = false;
-            $echecat = "tracks";
+            $echecat = "description";
         }else{
             $done = true;
         }
@@ -169,7 +140,7 @@ function editAlbumDetails($id){
     if($success){
         $reponse = array('status' => 1, 'status_message' => 'Details mis à jour avec succès', 'done something' => $done);
     }else{
-        $reponse = array('status' => 0, 'status_message' => 'Erreur lors de la mise à jours des détails', 'at' => $echecat);
+        $reponse = array('status' => 0, 'status_message' => 'Erreur lors de la mise à jours des détails', 'sql_err' => mysqli_error($sqli_bdd),'at' => $echecat);
     }
 
     header('Content-Type: application/json');
