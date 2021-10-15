@@ -91,8 +91,9 @@ function getAlbumDetails($id = "0"){
 
     if (!$hadDetails && $id != "0"){
         $reponse = array('status' => 0, 'status_message' => 'Aucun résultat');
-    }
+    }else{
 
+    }
     header('Content-Type: application/json');
     echo json_encode($reponse, true);
 }
