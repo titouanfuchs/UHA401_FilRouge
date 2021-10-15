@@ -1,6 +1,9 @@
 <?php
 
 include ("connexion_base.php");
+header('Content-Type: application/json');
+global $actionReponse;
+$actionReponse = array();
 
 if (isset($_GET['action'])){
     switch ($_GET['action']){
@@ -21,74 +24,102 @@ if (isset($_GET['action'])){
     total();
 }
 
-function buildBD(){
+function buildBD($total = false){
     global $bdd;
+    global $actionReponse;
 
-    $sql = file_get_contents('sql/api_music.sql');
-
-    $bdd->query($sql);
-}
-
-function clearDB(){
-    global $bdd;
-
-    $bdd->query("SET FOREIGN_KEY_CHECKS = 0;");
-    $bdd->query("TRUNCATE details");
-    $bdd->query("TRUNCATE albums");
-    $bdd->query("TRUNCATE groupes");
-    $bdd->query("TRUNCATE link_groupe_genre");
-    $bdd->query("TRUNCATE genres");
-    $bdd->query("SET FOREIGN_KEY_CHECKS = 1;");
-}
-
-function fillBD(){
-    global $bdd;
-
-    $albums_data = file_get_contents('https://filrouge.uha4point0.fr/music/albums');
-    $albums =json_decode($albums_data,true);
-
-    $groupes_data = file_get_contents('https://filrouge.uha4point0.fr/music/groupes');
-    $groupes =json_decode($groupes_data,true);
-
-
-    foreach ($groupes as $groupe){
-        foreach ($groupe['genre'] as $genre){
-            $reponse = $bdd->query("SELECT * FROM genres WHERE nom='{$genre}'");
-            $genreResult = $reponse->fetchAll();
-
-            if (count($genreResult) == 0){
-                pushGenreToBDD($genre);
-            }
-
-            $genreid = array();
-
-            $reponse = $bdd->query("SELECT id FROM genres WHERE nom='{$genre}'");
-            $genreResult = $reponse->fetchAll();
-
-            foreach ($genreResult as $id){
-                array_push($genreid, $id['id']);
-            }
-
-            $reponse = $bdd->query("SELECT * FROM groupes WHERE nom='{$groupe['nom']}'");
-            $groupeResult = $reponse->fetchAll();
-
-            if (count($groupeResult) == 0){
-                pushGroupToBDD($groupe);
-            }
-
-            foreach ($genreid as $genre_){
-                linkGroupToGenre($groupe['id'], $genre_);
-            }
-        }
+    try{
+        $sql = file_get_contents('sql/api_music.sql');
+        $bdd->query($sql);
+        $actionReponse['dbBuild'] = 'OK';
+    }catch (Exception $e){
+        $actionReponse['dbBuild'] = $e;
     }
 
-    foreach ($albums as $album) {
-        $reponse = $bdd->query("SELECT * FROM groupes WHERE id='{$album['artiste']}'");
-        $groupReponse = $reponse->fetchAll();
+    if (!$total){
+        echo json_encode($actionReponse, JSON_PRETTY_PRINT);
+    }
+}
 
-        if (count($groupReponse) != 0) {
-            pushAlbumToBDD($album);
+function clearDB($total = false){
+    global $bdd;
+    global $actionReponse;
+
+    try{
+        $bdd->query("SET FOREIGN_KEY_CHECKS = 0;");
+        $bdd->query("TRUNCATE details");
+        $bdd->query("TRUNCATE albums");
+        $bdd->query("TRUNCATE groupes");
+        $bdd->query("TRUNCATE link_groupe_genre");
+        $bdd->query("TRUNCATE genres");
+        $bdd->query("SET FOREIGN_KEY_CHECKS = 1;");
+        $actionReponse['dbClear'] = 'OK';
+    }catch (Exception $e){
+        $actionReponse['dbClear'] = $e;
+    }
+
+    if (!$total){
+        echo json_encode($actionReponse, JSON_PRETTY_PRINT);
+    }
+}
+
+function fillBD($total = false){
+    global $bdd;
+    global $actionReponse;
+
+    try{
+        $albums_data = file_get_contents('https://filrouge.uha4point0.fr/music/albums');
+        $albums =json_decode($albums_data,true);
+
+        $groupes_data = file_get_contents('https://filrouge.uha4point0.fr/music/groupes');
+        $groupes =json_decode($groupes_data,true);
+
+        foreach ($groupes as $groupe){
+            foreach ($groupe['genre'] as $genre){
+                $reponse = $bdd->query("SELECT * FROM genres WHERE nom='{$genre}'");
+                $genreResult = $reponse->fetchAll();
+
+                if (count($genreResult) == 0){
+                    pushGenreToBDD($genre);
+                }
+
+                $genreid = array();
+
+                $reponse = $bdd->query("SELECT id FROM genres WHERE nom='{$genre}'");
+                $genreResult = $reponse->fetchAll();
+
+                foreach ($genreResult as $id){
+                    array_push($genreid, $id['id']);
+                }
+
+                $reponse = $bdd->query("SELECT * FROM groupes WHERE nom='{$groupe['nom']}'");
+                $groupeResult = $reponse->fetchAll();
+
+                if (count($groupeResult) == 0){
+                    pushGroupToBDD($groupe);
+                }
+
+                foreach ($genreid as $genre_){
+                    linkGroupToGenre($groupe['id'], $genre_);
+                }
+            }
         }
+
+        foreach ($albums as $album) {
+            $reponse = $bdd->query("SELECT * FROM groupes WHERE id='{$album['artiste']}'");
+            $groupReponse = $reponse->fetchAll();
+
+            if (count($groupReponse) != 0) {
+                pushAlbumToBDD($album);
+            }
+        }
+        $actionReponse['dbFill'] = "OK";
+    }catch (Exception $e){
+        $actionReponse['dbClear'] = $e;
+    }
+
+    if (!$total){
+        echo json_encode($actionReponse, JSON_PRETTY_PRINT);
     }
 }
 
@@ -106,7 +137,7 @@ function pushGenreToBDD($genre){ //Remplissage des genres;
     $req = $bdd->prepare('INSERT INTO genres(nom) VALUES(:nom)');
     $req->execute(array(
         'nom' => $genre
-    ))/* or die(print_r($req->errorInfo()))*/;
+    )) or die(print_r($req->errorInfo()));
 }
 
 function pushGroupToBDD($group){
@@ -117,7 +148,7 @@ function pushGroupToBDD($group){
         'nom' => $group['nom'],
         'chanteur' => $group['chanteur'],
         'origin' => $group['origin']
-    ))/* or die(print_r($req->errorInfo()))*/;
+    )) or die(print_r($req->errorInfo()));
 }
 
 function pushAlbumToBDD($album){
@@ -134,6 +165,10 @@ function pushAlbumToBDD($album){
 }
 
 function total(){
-    buildBD();
-    fillBD();
+    global $actionReponse;
+    buildBD(true);
+    clearDB(true);
+    fillBD(true);
+
+    echo json_encode($actionReponse, JSON_PRETTY_PRINT);
 }

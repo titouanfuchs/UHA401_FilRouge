@@ -1,5 +1,4 @@
 <?php
-require("../lastfmTrackReader.php");
 require("../connexion_base.php");
 
 $request_method = $_SERVER["REQUEST_METHOD"];
