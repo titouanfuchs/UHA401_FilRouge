@@ -13,6 +13,8 @@ RewriteRule ^API/groupes+/(\d+)$ ./API/groupes.php?groupe=$1
 RewriteRule ^API/recherche/?$ ./API/recherche.php [NC,L]
 RewriteRule ^API/recherche+/(\d+)$ ./API/recherche.php?search=$1
 
+RewriteRule ^API/structure/?$ ./API/structures.php [NC,L]
+
 #bdd
 RewriteRule ^dbBuild/?$ ./dbBuild.php [NC,L]
 RewriteRule ^[^/]+/(\d+)$ ./dbBuild.php?action=$1
