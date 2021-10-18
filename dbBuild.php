@@ -16,6 +16,7 @@ if (isset($_GET['action'])){
         case "fill":
             fillBD();
             break;
+        case "total":
         default:
             total();
             break;
@@ -29,7 +30,15 @@ function buildBD($total = false){
     global $actionReponse;
 
     try{
-        $sql = file_get_contents('sql/api_music.sql');
+        $bdd->query("SET FOREIGN_KEY_CHECKS = 0;");
+        $bdd->query("DROP TABLE IF EXISTS details");
+        $bdd->query("DROP TABLE IF EXISTS albums");
+        $bdd->query("DROP TABLE IF EXISTS groupes");
+        $bdd->query("DROP TABLE IF EXISTS link_groupe_genre");
+        $bdd->query("DROP TABLE IF EXISTS genres");
+        $bdd->query("SET FOREIGN_KEY_CHECKS = 1;");
+
+        $sql = file_get_contents('./sql/api_music.sql');
         $bdd->query($sql);
         $actionReponse['dbBuild'] = 'OK';
     }catch (Exception $e){

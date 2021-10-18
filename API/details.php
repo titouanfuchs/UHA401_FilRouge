@@ -3,7 +3,16 @@ require("../connexion_base.php");
 
 $request_method = $_SERVER["REQUEST_METHOD"];
 
-$headers = apache_request_headers();
+$headers = getallheaders();
+$auth = "NONE";
+
+if (isset($headers['authorization'])){
+    $auth = $headers['authorization'];
+}else if (isset($headers['Authorization'])){
+    $auth = $headers['Authorization'];
+}
+
+header('Content-Type: application/json');
 
 switch($request_method){
     case 'GET':
@@ -14,7 +23,7 @@ switch($request_method){
         }
         break;
     case 'POST':
-        if ($headers['Authorization'] == $_SESSION['APIPASS']) {
+        if ($auth == $_SESSION['APIPASS']) {
             postAlbumDetails();
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
@@ -24,7 +33,7 @@ switch($request_method){
         }
         break;
     case 'PUT':
-        if ($headers['Authorization'] == $_SESSION['APIPASS']) {
+        if ($auth == $_SESSION['APIPASS']) {
             editAlbumDetails($_GET['album']);
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
@@ -32,7 +41,7 @@ switch($request_method){
         }
         break;
     case 'DELETE':
-        if ($headers['Authorization'] == $_SESSION['APIPASS']) {
+        if ($auth == $_SESSION['APIPASS']) {
             removeAlbumDetails($_GET['album']);
         }else{
             header('WWW-Authenticate: Basic realm="My Realm"');
@@ -58,11 +67,15 @@ function postAlbumDetails(){
             'album' => $PUT['album'],
             'lastfm' => $PUT['lastfm'],
             'description' => mysqli_real_escape_string($sqli_bdd,$PUT['description'])
-        )) or die(print_r($req->errorInfo()));
+        ));
 
-        $reponse = array('status' => 1, 'status_message' => 'Ajout réussis !');
+        if ($req->errorCode() == 0){
+            $reponse = array('status' => 1, 'status_message' => 'Ajout réussis !');
+        }else{
+            $reponse = array('status' => 0, 'status_message' => 'Echec de l ajout.', 'err' => $req->errorInfo()[2]);
+        }
     }else{
-        $reponse = array('status' => 0, 'status_message' => 'Echec de l ajout');
+        $reponse = array('status' => 0, 'status_message' => 'Echec de l ajout. Il manque un ou plusieurs champs.');
     }
 
     header('Content-Type: application/json');

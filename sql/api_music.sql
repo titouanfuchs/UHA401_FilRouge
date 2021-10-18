@@ -33,7 +33,7 @@ CREATE TABLE `albums` (
   `artiste` int(255) NOT NULL,
   `pistes` int(255) DEFAULT NULL,
   `sortie` int(255) DEFAULT NULL,
-  `couverture` varchar(255) DEFAULT NULL
+  `couverture` varchar (255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -43,10 +43,10 @@ CREATE TABLE `albums` (
 --
 
 CREATE TABLE `details` (
-  `id` int(11) NOT NULL,
+  `id` int(255) NOT NULL,
   `album` int(11) NOT NULL,
   `lastfm` varchar(255) DEFAULT NULL,
-  `tracks` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -101,7 +101,7 @@ ALTER TABLE `albums`
 --
 ALTER TABLE `details`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `album` (`album`);
+  ADD UNIQUE KEY `album` (`album`);
 
 --
 -- Index pour la table `genres`
