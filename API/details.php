@@ -66,7 +66,7 @@ function postAlbumDetails(){
         $req->execute(array(
             'album' => $PUT['album'],
             'lastfm' => $PUT['lastfm'],
-            'description' => mysqli_real_escape_string($sqli_bdd,$PUT['description'])
+            'description' => $PUT['description']
         ));
 
         if ($req->errorCode() == 0){
