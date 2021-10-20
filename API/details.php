@@ -141,12 +141,13 @@ function editAlbumDetails($id){
     }
 
     if (isset($PUT['description']) && $success){
-        $text = mysqli_real_escape_string($sqli_bdd,$PUT['description']);
-        if (!mysqli_query($sqli_bdd, "UPDATE details SET description='{$text}' WHERE album={$id}")){
+        $req = $bdd->prepare("UPDATE details(description) VALUES(:description) WHERE album={$id}");
+        $req->execute(array(
+            'description' => $PUT['description']
+        ));
+        if ($req->errorCode() != 0){
             $success = false;
             $echecat = "description";
-        }else{
-            $done = true;
         }
     }
 
