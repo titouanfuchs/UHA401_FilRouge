@@ -85,6 +85,18 @@ CREATE TABLE `link_groupe_genre` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Structure de la table `tracks`
+--
+
+CREATE TABLE `tracks` (
+    `albumID` int(11) NOT NULL,
+    `trackNum` int(11) NOT NULL,
+    `nom` varchar(255) DEFAULT NULL,
+    `duree` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+--
 -- Index pour les tables déchargées
 --
 
@@ -125,6 +137,11 @@ ALTER TABLE `link_groupe_genre`
   ADD KEY `groupe` (`groupe`),
   ADD KEY `genre` (`genre`);
 
+ALTER TABLE `tracks`
+  ADD PRIMARY KEY (`albumID`,`trackNum`) USING BTREE,
+  ADD KEY `albumID` (`albumID`),
+  ADD KEY `trackNum` (`trackNum`);
+
 --
 -- AUTO_INCREMENT pour les tables déchargées
 --
@@ -162,6 +179,9 @@ ALTER TABLE `groupes`
 --
 ALTER TABLE `albums`
   ADD CONSTRAINT `albums_ibfk_1` FOREIGN KEY (`artiste`) REFERENCES `groupes` (`id`);
+
+ALTER TABLE `tracks`
+    ADD CONSTRAINT `tracks_ibfk_1` FOREIGN KEY (`albumID`) REFERENCES `albums` (`id`);
 
 --
 -- Contraintes pour la table `details`

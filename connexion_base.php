@@ -12,4 +12,6 @@
     $bdd = new PDO('mysql:host=localhost;dbname=api_music;charset=utf8', "{$_SESSION['user']}", "{$_SESSION['pass']}");
     global $sqli_bdd;
     $sqli_bdd = mysqli_connect("localhost", $_SESSION['user'], $_SESSION['pass'], "api_music");
+
+    $_SESSION['detailsStruct'] = ['id', 'album', 'lastfm', 'description', 'tracks'];
 ?>

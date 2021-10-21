@@ -69,6 +69,18 @@ function postAlbumDetails(){
             'description' => $PUT['description']
         ));
 
+        if (isset($PUT['tracks'])){
+            foreach ($PUT['tracks'] as $track){
+                $req = $bdd->prepare('INSERT INTO tracks(albumID, trackNum, nom, duree) VALUES(:albumID, :trackNum, :nom, :duree) IGNORE');
+                $req->execute(array(
+                    'albumID' => $track['albumID'],
+                    'trackNum' => $track['trackNum'],
+                    'nom' => $track['nom'],
+                    'duree' => $track['duree']
+                ));
+            }
+        }
+
         if ($req->errorCode() == 0){
             $reponse = array('status' => 1, 'status_message' => 'Ajout réussis !');
         }else{
@@ -97,14 +109,14 @@ function getAlbumDetails($id = "0"){
     $details = $result->fetchAll(PDO::FETCH_ASSOC);
 
     foreach($details as $detail){
+        $tracks = $bdd->query("SELECT * FROM tracks WHERE albumID = {$detail['album']}")->fetchAll();
+        $detail['tracks'] = json_encode($tracks);
         $reponse[] = $detail;
         $hadDetails = true;
     }
 
     if (!$hadDetails && $id != "0"){
         $reponse = array('status' => 0, 'status_message' => 'Aucun résultat');
-    }else{
-
     }
     header('Content-Type: application/json');
     echo json_encode($reponse, true);
@@ -126,6 +138,7 @@ function editAlbumDetails($id){
         if (!mysqli_query($sqli_bdd, "UPDATE details SET album={$PUT['album']} WHERE album={$id}")){
             $success = false;
             $echecat = "album";
+            $sql_err = mysqli_error($sqli_bdd);
         }else{
             $done = true;
         }
@@ -135,26 +148,45 @@ function editAlbumDetails($id){
         if (!mysqli_query($sqli_bdd, "UPDATE details SET lastfm='{$PUT['lastfm']}' WHERE album={$id}")){
             $success = false;
             $echecat = "lastfm";
+            $sql_err = mysqli_error($sqli_bdd);
         }else{
             $done = true;
         }
     }
 
     if (isset($PUT['description']) && $success){
-        $req = $bdd->prepare("UPDATE details(description) VALUES(:description) WHERE album={$id}");
+        $req = $bdd->prepare("UPDATE details SET description= :description WHERE album={$id}");
         $req->execute(array(
-            'description' => $PUT['description']
+            'description' => strval($PUT['description'])
         ));
         if ($req->errorCode() != 0){
+            $sql_err = $req->errorInfo();
             $success = false;
             $echecat = "description";
+        }
+    }
+
+    if (isset($PUT['tracks']) && $success){
+        foreach ($PUT['tracks'] as $track){
+            $req = $bdd->prepare("UPDATE tracks SET trackNum= :trackNum, nom=:nom, duree=:duree WHERE albumID={$track['albumID']}, trackNum={$track['trackNum']}");
+            $req->execute(array(
+                'trackNum' => strval($track['trackNum']),
+                'nom' => strval($track['nom']),
+                'duree' => strval($track['duree'])
+            ));
+            if ($req->errorCode() != 0){
+                $sql_err = $req->errorInfo();
+                $success = false;
+                $echecat = "tracks";
+                break;
+            }
         }
     }
 
     if($success){
         $reponse = array('status' => 1, 'status_message' => 'Details mis à jour avec succès', 'done something' => $done);
     }else{
-        $reponse = array('status' => 0, 'status_message' => 'Erreur lors de la mise à jours des détails', 'sql_err' => mysqli_error($sqli_bdd),'at' => $echecat);
+        $reponse = array('status' => 0, 'status_message' => 'Erreur lors de la mise à jours des détails', 'sql_err' => $sql_err,'at' => $echecat);
     }
 
     header('Content-Type: application/json');

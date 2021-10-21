@@ -16,12 +16,15 @@ switch ($request_method) {
 function getAlbum($structure)
 {
     global $bdd;
-
-    $columns = $bdd->query("SHOW COLUMNS FROM {$structure}")->fetchAll(PDO::FETCH_ASSOC);
     $reponse = array();
 
-    foreach ($columns as $column){
-        $reponse[] = $column['Field'];
+    if (isset($_SESSION[$structure . 'Struct'])){
+        $reponse = $_SESSION[$structure . 'Struct'];
+    }else{
+        $columns = $bdd->query("SHOW COLUMNS FROM {$structure}")->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($columns as $column){
+            $reponse[] = $column['Field'];
+        }
     }
 
     echo json_encode($reponse, JSON_PRETTY_PRINT);

@@ -35,6 +35,7 @@ function buildBD($total = false){
         $bdd->query("DROP TABLE IF EXISTS albums");
         $bdd->query("DROP TABLE IF EXISTS groupes");
         $bdd->query("DROP TABLE IF EXISTS link_groupe_genre");
+        $bdd->query("DROP TABLE IF EXISTS tracks");
         $bdd->query("DROP TABLE IF EXISTS genres");
         $bdd->query("SET FOREIGN_KEY_CHECKS = 1;");
 
