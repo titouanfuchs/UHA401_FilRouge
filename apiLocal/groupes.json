@@ -1,0 +1,72 @@
+[
+  {
+    "nom": "System Of A Down",
+    "id": 1,
+    "chanteur": "Serj Tankian",
+    "origin": "Glendale",
+    "genre": [
+      "nu metal",
+      "hard rock",
+      "heavy metal",
+      "alternative metal"
+    ]
+  },
+  {
+    "nom": "Mika",
+    "id": 2,
+    "chanteur": "Michael Holbrook",
+    "origin": "Beyrouth",
+    "genre": [
+      "pop",
+      "pop-rock",
+      "classique"
+    ]
+  },
+  {
+    "nom": "Muse",
+    "id": 3,
+    "chanteur": "Matthew Bellamy",
+    "origin": "Royaume-Uni",
+    "genre": [
+      "rock alternatif",
+      "rock progressif",
+      "new prog",
+      "art rock"
+    ]
+  },
+  {
+    "nom": "aiden",
+    "id": 4,
+    "chanteur": "William Francis",
+    "origin": "Seattle",
+    "genre": [
+      "Horror punk",
+      "post-hardcore",
+      "gothic rock",
+      "screamo"
+    ]
+  },
+  {
+    "nom": "The Beatles",
+    "id": 5,
+    "chanteur": "John Lennon",
+    "origin": "Liverpool",
+    "genre": [
+      "Rock",
+      "pop",
+      "psychedelique"
+    ]
+  },
+  {
+    "nom": "Booba",
+    "id": 6,
+    "chanteur": "Elie Yaffa",
+    "origin": "Boulogne-Billancourt",
+    "genre": [
+      "hip-hop",
+      "rap francais",
+      "trap",
+      "gansta rap"
+    ]
+  }
+]

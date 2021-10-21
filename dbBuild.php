@@ -77,11 +77,13 @@ function fillBD($total = false){
     global $actionReponse;
 
     try{
-        $albums_data = file_get_contents('https://filrouge.uha4point0.fr/music/albums');
-        $albums =json_decode($albums_data,true);
+        //$albums_data = @file_get_contents('https://filrouge.uha4point0.fr/music/albums');
+        $albums_data = @file_get_contents('./apiLocal/albums.json');
+        $albums = json_decode($albums_data,true);
 
-        $groupes_data = file_get_contents('https://filrouge.uha4point0.fr/music/groupes');
-        $groupes =json_decode($groupes_data,true);
+        //$groupes_data = @file_get_contents('https://filrouge.uha4point0.fr/music/groupes');
+        $groupes_data = @file_get_contents('./apiLocal/groupes.json');
+        $groupes = json_decode($groupes_data,true);
 
         foreach ($groupes as $groupe){
             foreach ($groupe['genre'] as $genre){
@@ -124,7 +126,7 @@ function fillBD($total = false){
         }
         $actionReponse['dbFill'] = "OK";
     }catch (Exception $e){
-        $actionReponse['dbClear'] = $e;
+        $actionReponse['dbFill'] = $e;
     }
 
     if (!$total){
