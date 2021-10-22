@@ -70,13 +70,14 @@ function postAlbumDetails(){
         ));
 
         if (isset($PUT['tracks'])){
-            foreach ($PUT['tracks'] as $track){
-                $req = $bdd->prepare('INSERT INTO tracks(albumID, trackNum, nom, duree) VALUES(:albumID, :trackNum, :nom, :duree) IGNORE');
+            $tracks = $PUT['tracks'];
+            foreach ($tracks as $track){
+                $req = $bdd->prepare('INSERT IGNORE INTO tracks(albumID, trackNum, nom, duree) VALUES(:albumID, :trackNum, :nom, :duree)');
                 $req->execute(array(
                     'albumID' => $track['albumID'],
                     'trackNum' => $track['trackNum'],
                     'nom' => $track['nom'],
-                    'duree' => $track['duree']
+                    'duree' => strval($track['duree'])
                 ));
             }
         }
@@ -109,7 +110,7 @@ function getAlbumDetails($id = "0"){
     $details = $result->fetchAll(PDO::FETCH_ASSOC);
 
     foreach($details as $detail){
-        $tracks = $bdd->query("SELECT * FROM tracks WHERE albumID = {$detail['album']}")->fetchAll();
+        $tracks = $bdd->query("SELECT * FROM tracks WHERE albumID = {$detail['album']}")->fetchAll(PDO::FETCH_ASSOC);
         $detail['tracks'] = json_encode($tracks);
         $reponse[] = $detail;
         $hadDetails = true;
