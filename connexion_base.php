@@ -1,7 +1,7 @@
 <?php
     session_start();
-    $_SESSION['user'] = 'local';
-    $_SESSION['pass'] = 'Ms1570lety_';
+    $_SESSION['user'] = 'root';
+    $_SESSION['pass'] = 'root';
 
     $_SESSION['APIPASS'] = 'Parcequejailedroit';
     global $bdd;
