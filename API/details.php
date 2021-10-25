@@ -164,14 +164,16 @@ function editAlbumDetails($id){
             $sql_err = $req->errorInfo();
             $success = false;
             $echecat = "description";
+        }else{
+            $done = true;
         }
     }
 
     if (isset($PUT['tracks']) && $success){
         foreach ($PUT['tracks'] as $track){
-            $req = $bdd->prepare("UPDATE tracks SET trackNum= :trackNum, nom=:nom, duree=:duree WHERE albumID={$track['albumID']}, trackNum={$track['trackNum']}");
+            $req = $bdd->prepare("UPDATE tracks SET trackNum=:trackNum, nom=:nom, duree=:duree WHERE albumID='{$track['albumID']}' AND trackNum='{$track['trackNum']}'");
             $req->execute(array(
-                'trackNum' => strval($track['trackNum']),
+                'trackNum' => $track['trackNum'],
                 'nom' => strval($track['nom']),
                 'duree' => strval($track['duree'])
             ));
@@ -180,6 +182,8 @@ function editAlbumDetails($id){
                 $success = false;
                 $echecat = "tracks";
                 break;
+            }else{
+                $done = true;
             }
         }
     }
