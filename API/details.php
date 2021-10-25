@@ -171,12 +171,24 @@ function editAlbumDetails($id){
 
     if (isset($PUT['tracks']) && $success){
         foreach ($PUT['tracks'] as $track){
-            $req = $bdd->prepare("UPDATE tracks SET trackNum=:trackNum, nom=:nom, duree=:duree WHERE albumID='{$track['albumID']}' AND trackNum='{$track['trackNum']}'");
-            $req->execute(array(
-                'trackNum' => $track['trackNum'],
-                'nom' => strval($track['nom']),
-                'duree' => strval($track['duree'])
-            ));
+            $contains = $bdd->query("SELECT COUNT(*) FROM tracks WHERE albumID='{$track['albumID']}' AND trackNum='{$track['trackNum']}'")->fetchAll(PDO::FETCH_ASSOC)[0]['COUNT(*)'];
+            if ($contains === "0"){
+                $req = $bdd->prepare('INSERT INTO tracks(albumID, trackNum, nom, duree) VALUES(:albumID, :trackNum, :nom, :duree)');
+                $req->execute(array(
+                    'albumID' => $track['albumID'],
+                    'trackNum' => $track['trackNum'],
+                    'nom' => $track['nom'],
+                    'duree' => strval($track['duree'])
+                ));
+            }else{
+                $req = $bdd->prepare("UPDATE tracks SET trackNum=:trackNum, nom=:nom, duree=:duree WHERE albumID='{$track['albumID']}' AND trackNum='{$track['trackNum']}'");
+                $req->execute(array(
+                    'trackNum' => $track['trackNum'],
+                    'nom' => strval($track['nom']),
+                    'duree' => strval($track['duree'])
+                ));
+            }
+
             if ($req->errorCode() != 0){
                 $sql_err = $req->errorInfo();
                 $success = false;
@@ -211,6 +223,7 @@ function removeAlbumDetails($id){
         }
     }else{
         if (mysqli_query($sqli_bdd, "DELETE FROM details WHERE album={$id}")){
+            mysqli_query($sqli_bdd, "DELETE FROM tracks WHERE albumID={$id}");
             $reponse = array('status' => 1, 'status_message' => 'Details retirés');
         }else{
             $reponse = array('status' => 0, 'status_message' => 'Une erreur est survenue lors du retrait des details');
