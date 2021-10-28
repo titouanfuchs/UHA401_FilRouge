@@ -13,6 +13,13 @@ Lors de la première initialisation il faut générer la base de données.
     ```
 - Une fois les modifications réalisées, il faut se rendre sur la page `dbBuild.php` (sois avec `localhost/addresse/vers/le/site/dbBuild`, sois avec `localhost/addresse/vers/le/site/dbBuild.php`). La base données va se générer et rediriger vers `index.php`
 
+## Base de données
+Il est possible de réaliser plusieurs actions sur la base de données avec `localhost/addresse/vers/le/site/dbBuild?action=<action>`.
+- `dbBuild?action=total` ou `dbBuild`(sans action) : Permet de totalement reconstruire la base de données.
+- `dbBuild?action=clear` : Permet de vider toutes les tables de la base de données.
+- `dbBuild?action=fill` : Permet de remplir toutes les tables depuis les API fournis.
+
+
 ## API
 Il y a 4 API.
 - `albums` : Contient tous les albums. (`localhost/addresse/vers/le/site/API/albums`)
