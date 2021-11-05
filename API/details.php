@@ -15,6 +15,7 @@ if (isset($headers['authorization'])){
 header('Content-Type: application/json');
 
 switch($request_method){
+    //TODO : éviter les conditions multiples et préférer un paramètre "action" et un switch
     case 'GET':
         if (!empty($_GET["album"])){
             getAlbumDetails($_GET["album"]);
@@ -26,6 +27,7 @@ switch($request_method){
         if ($auth == $_SESSION['APIPASS']) {
             postAlbumDetails();
         }else{
+            //TODO : ces header reviennent plusieurs fois, il y a donc moyen de les factoriser dans une fonction
             header('WWW-Authenticate: Basic realm="My Realm"');
             header('HTTP/1.0 401 Unauthorized');
 
@@ -55,10 +57,10 @@ switch($request_method){
 
 function postAlbumDetails(){
     global $bdd;
-    global $sqli_bdd;
+    global $sqli_bdd; //TODO : ?
 
-    $reponse = array();
-
+    $reponse = array(); //TODO : ?
+    //TODO : éviter d'avoir des variables globales (PUT, GET, etc ...) dans une fonction et les passer en paramètre
     $PUT = json_decode(file_get_contents('php://input'), true);
 
     if (isset($PUT['album']) && isset($PUT['lastfm']) && isset($PUT['description'])){
@@ -90,7 +92,7 @@ function postAlbumDetails(){
     }else{
         $reponse = array('status' => 0, 'status_message' => 'Echec de l ajout. Il manque un ou plusieurs champs.');
     }
-
+    //TODO : les deux lignes suivantes sont affichés dans plusieurs fonctions, il y a donc moyen de les factoriser
     header('Content-Type: application/json');
     echo json_encode($reponse, JSON_PRETTY_PRINT);
 }
@@ -98,6 +100,7 @@ function postAlbumDetails(){
 function getAlbumDetails($id = "0"){
     global $sqli_bdd;
     global $bdd;
+    //TODO : limiter la sélection
     $query = "SELECT * FROM details";
     $reponse = array();
 
@@ -109,6 +112,7 @@ function getAlbumDetails($id = "0"){
     $hadDetails = false;
     $details = $result->fetchAll(PDO::FETCH_ASSOC);
 
+    //TODO : UNE JOINTURE dans tes requêtes
     foreach($details as $detail){
         $tracks = $bdd->query("SELECT * FROM tracks WHERE albumID = {$detail['album']}")->fetchAll(PDO::FETCH_ASSOC);
         $detail['tracks'] = json_encode($tracks);
@@ -130,11 +134,11 @@ function editAlbumDetails($id){
     $PUT = json_decode(file_get_contents('php://input'), true);
 
     $success = true;
-    $reponse = array();
+    $reponse = array(); //TODO : ???
     $done = false;
     $echecat = "";
     $sql_err = "";
-
+    //TODO : éviter d'avoir des variables globales (PUT, GET, etc ...) dans une fonction et les passer en paramètre
     if (isset($PUT['album']) && $success){
         if (!mysqli_query($sqli_bdd, "UPDATE details SET album={$PUT['album']} WHERE album={$id}")){
             $success = false;
@@ -213,7 +217,7 @@ function editAlbumDetails($id){
 function removeAlbumDetails($id){
     global $sqli_bdd;
 
-    $reponse = array();
+    $reponse = array(); //TODO : ???
 
     if (!isset($_GET['album'])){
         if (mysqli_query($sqli_bdd, "TRUNCATE details")){
@@ -234,6 +238,7 @@ function removeAlbumDetails($id){
     echo json_encode($reponse, JSON_PRETTY_PRINT);
 }
 
+//TODO : cette fonction n'est pas utilisée
 function returnAlbum($id = "0", $page = "-1"){
     global $bdd;
     $query = "SELECT * FROM albums";

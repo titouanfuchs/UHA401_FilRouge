@@ -45,11 +45,11 @@ function getGroupSearch($arg){
     global $bdd;
 
     $reponse = array();
-    $foundSomthing = false;
+    $foundSomthing = false; //TODO : ???
 
     $result = $bdd->query("SELECT * FROM groupes WHERE nom LIKE '{$arg}%'");
     $groupes = $result->fetchAll(PDO::FETCH_ASSOC);
-
+    //TODO : il faut faire des requêtes avec des jointures
     foreach ($groupes as $group){
         $genreResultID = $bdd->query("SELECT genre FROM link_groupe_genre WHERE groupe={$group['id']}");
         $genresID = $genreResultID->fetchAll(PDO::FETCH_ASSOC);
@@ -88,7 +88,7 @@ function getResearch($arg)
     }
 
     $albumResearch = getAlbumSearch($arg);
-
+    //TODO : il faut faire des requêtes avec des jointures
     foreach ($albumResearch['groupes'] as $groupe){
         $genreResultID = $bdd->query("SELECT genre FROM link_groupe_genre WHERE groupe={$groupe['id']}");
         $genresID = $genreResultID->fetchAll(PDO::FETCH_ASSOC);

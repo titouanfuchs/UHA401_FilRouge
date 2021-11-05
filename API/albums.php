@@ -7,6 +7,7 @@ $headers = apache_request_headers();
 
 switch($request_method){
     case 'GET':
+        //TODO : éviter les conditions multiples et préférer un paramètre "action" et un switch
         if (isset($_GET['count'])){
             countAlbums();
         }else if (isset($_GET['groupe'])){
@@ -31,14 +32,16 @@ switch($request_method){
 function countAlbums(){
     global $bdd;
     $result = $bdd->query("SELECT COUNT(*) FROM albums");
+    //TODO : il n'y a qu'une seule réponse, fetch aurait suffit
     $reponse = $result->fetchAll(PDO::FETCH_COLUMN);
-
+    //TODO : les deux lignes suivantes sont affichés dans plusieurs fonctions, il y a donc moyen de les factoriser
     header('Content-Type: application/json');
     echo json_encode($reponse[0], JSON_PRETTY_PRINT);
 }
 
 function getAlbum($id = "0", $page = "-1", $search = null, $groupe = 0){
     global $bdd;
+    //TODO : limiter la requête dans tous les cas
     $query = "SELECT * FROM albums";
     $reponse = array();
 
@@ -61,6 +64,7 @@ function getAlbum($id = "0", $page = "-1", $search = null, $groupe = 0){
     $result = $bdd->query($query);
     $albums = $result->fetchAll(PDO::FETCH_ASSOC);
 
+    //TODO : faire une seule requete avec une jointure dans la fonction au lieu de faire une boucle
     foreach ($albums as $album){
         $groupeResult = $bdd->query("SELECT nom FROM groupes WHERE id={$album['artiste']}");
         $artiste = $groupeResult->fetchAll();

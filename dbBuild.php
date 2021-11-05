@@ -5,7 +5,7 @@ header('Content-Type: application/json');
 global $actionReponse;
 $actionReponse = array();
 
-if (isset($_GET['action'])){
+if (isset($_GET['action'])){ //TODO : bien joué !
     switch ($_GET['action']){
         case "clear":
             clearDB();
@@ -79,6 +79,7 @@ function fillBD($total = false){
 
     try{
         //$albums_data = @file_get_contents('https://filrouge.uha4point0.fr/music/albums');
+        //TODO : ne pas récupérer les infos de l'API, c'est triché !!
         $albums_data = @file_get_contents('./apiLocal/albums.json');
         $albums = json_decode($albums_data,true);
 
@@ -96,7 +97,7 @@ function fillBD($total = false){
                 }
 
                 $genreid = array();
-
+                //TODO : pourquoi deux requêtes qui font la même recherche, si tu mets * dans la première, tu as forcément l'id aussi
                 $reponse = $bdd->query("SELECT id FROM genres WHERE nom='{$genre}'");
                 $genreResult = $reponse->fetchAll();
 

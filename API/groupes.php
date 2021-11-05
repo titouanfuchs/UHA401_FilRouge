@@ -6,6 +6,7 @@ $request_method = $_SERVER["REQUEST_METHOD"];
 $headers = apache_request_headers();
 
 switch($request_method){
+    //TODO : éviter les conditions multiples et préférer un paramètre "action" et un switch
     case 'GET':
         if (isset($_GET['count'])){
             countGroups();
@@ -40,13 +41,14 @@ function countGroups(){
     global $bdd;
     $result = $bdd->query("SELECT COUNT(*) FROM groupes");
     $reponse = $result->fetchAll(PDO::FETCH_COLUMN);
-
+    //TODO : les deux lignes suivantes sont affichés dans plusieurs fonctions, il y a donc moyen de les factoriser
     header('Content-Type: application/json');
     echo json_encode($reponse[0], JSON_PRETTY_PRINT);
 }
 
 function getGroup($id = "0", $page = "-1", $search = null){
     global $bdd;
+    //TODO : limiter la requête
     $query = "SELECT * FROM groupes";
     $reponse = array();
 
@@ -68,7 +70,7 @@ function getGroup($id = "0", $page = "-1", $search = null){
 
     $result = $bdd->query($query);
     $groups = $result->fetchAll(PDO::FETCH_ASSOC);
-
+    //TODO : une requête avec des jointures plutôt qu'une boucle et des multiples requêtes
     foreach ($groups as $group){
         $genreResultID = $bdd->query("SELECT genre FROM link_groupe_genre WHERE groupe={$group['id']}");
         $genresID = $genreResultID->fetchAll(PDO::FETCH_ASSOC);
